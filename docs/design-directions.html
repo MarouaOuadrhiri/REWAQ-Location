@@ -1,0 +1,1072 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LOCATION — UI & Brand directions</title>
+    <style>
+      :root {
+        --navy: #101c2c;
+        --deep: #26374b;
+        --gold: #c6a36b;
+        --ivory: #f5f3ef;
+        --line: #e5e3df;
+        --muted: #64748b;
+        --text: #17202b;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--ivory);
+        color: var(--text);
+        font:
+          14px Arial,
+          sans-serif;
+      }
+      h1,
+      h2,
+      h3,
+      p {
+        margin-top: 0;
+      }
+      h1,
+      h2 {
+        font-family: Georgia, serif;
+        font-weight: 400;
+        letter-spacing: -0.04em;
+      }
+      h1 {
+        font-size: 54px;
+        margin-bottom: 15px;
+      }
+      h2 {
+        font-size: 36px;
+      }
+      .wrap {
+        max-width: 1440px;
+        margin: auto;
+        padding: 50px 5%;
+      }
+      .topline,
+      .eyebrow {
+        font-size: 10px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: #8a6837;
+      }
+      .topline {
+        display: flex;
+        justify-content: space-between;
+        border-bottom: 1px solid var(--line);
+        padding-bottom: 20px;
+        margin-bottom: 45px;
+      }
+      .intro {
+        max-width: 740px;
+        color: var(--muted);
+        line-height: 1.8;
+      }
+      .logos {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        margin: 30px 0 60px;
+      }
+      .logo {
+        padding: 0 0 20px;
+        background: white;
+        border: 1px solid var(--line);
+        text-align: left;
+        cursor: pointer;
+        border-radius: 6px;
+        overflow: hidden;
+        color: var(--text);
+      }
+      .logo img {
+        width: 100%;
+        display: block;
+        border-radius: 0;
+      }
+      .logo strong,
+      .logo span {
+        display: block;
+        margin: 16px 20px 0;
+      }
+      .logo span {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.6;
+        margin-top: 8px;
+      }
+      .logo[aria-pressed="true"] {
+        outline: 2px solid var(--gold);
+        outline-offset: 3px;
+      }
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 20px;
+        margin: 20px 0;
+      }
+      .toolbar select {
+        padding: 13px 16px;
+        background: white;
+        color: var(--text);
+        border: 1px solid var(--line);
+        min-width: 270px;
+        font: inherit;
+      }
+      .frame {
+        border: 1px solid #d5d3cf;
+        box-shadow: 0 20px 50px #101c2c09;
+        border-radius: 7px;
+        overflow: hidden;
+        background: white;
+        min-height: 600px;
+      }
+      .browserbar {
+        background: #eae8e4;
+        height: 32px;
+        padding: 10px 15px;
+        display: flex;
+        gap: 6px;
+      }
+      .browserbar i {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #c2c0bc;
+      }
+      .public-nav {
+        background: var(--navy);
+        color: var(--ivory);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 20px 30px;
+        font-size: 10px;
+        gap: 15px;
+      }
+      .wordmark {
+        font-size: 16px;
+        letter-spacing: 0.18em;
+        font-weight: 600;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+      .wordmark img {
+        width: 32px;
+        height: 32px;
+      }
+      .nav-items {
+        display: flex;
+        gap: 20px;
+      }
+      .mock {
+        padding: 35px;
+        background: var(--ivory);
+        min-height: 550px;
+      }
+      .mock h2 {
+        font-size: 37px;
+        margin-bottom: 15px;
+      }
+      .hero {
+        background: var(--navy);
+        color: var(--ivory);
+        padding: 40px 50px;
+        position: relative;
+        min-height: 420px;
+        overflow: hidden;
+      }
+      .hero h2 {
+        font-size: 50px;
+        position: relative;
+        z-index: 1;
+        max-width: 520px;
+        line-height: 1.05;
+      }
+      .hero h2 em {
+        color: var(--gold);
+        font-weight: 400;
+      }
+      .hero .car {
+        width: 60%;
+        height: 250px;
+        object-fit: contain;
+        position: absolute;
+        right: 20px;
+        bottom: 35px;
+        filter: drop-shadow(0 20px 12px #0007);
+      }
+      .hero p {
+        color: #b5c0cf;
+        max-width: 280px;
+        font-size: 12px;
+        line-height: 1.8;
+      }
+      .btn {
+        display: inline-block;
+        background: var(--gold);
+        color: var(--navy);
+        padding: 12px 20px;
+        font-size: 11px;
+        font-weight: 600;
+        border: 0;
+        border-radius: 2px;
+      }
+      .outline {
+        border: 1px solid var(--line);
+        background: white;
+      }
+      .search {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr auto;
+        gap: 14px;
+        padding: 22px 30px;
+        background: white;
+        border-bottom: 1px solid var(--line);
+        font-size: 11px;
+      }
+      .input {
+        background: white;
+        border: 1px solid var(--line);
+        padding: 12px;
+        border-radius: 3px;
+        min-height: 40px;
+        margin-top: 8px;
+        font-size: 11px;
+        color: var(--muted);
+      }
+      .grid3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 18px;
+      }
+      .card {
+        border: 1px solid var(--line);
+        background: white;
+        border-radius: 5px;
+        overflow: hidden;
+      }
+      .card-media {
+        height: 150px;
+        background: #ecebe7;
+        padding: 20px;
+      }
+      .card-media img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+      }
+      .cardbody {
+        padding: 20px;
+      }
+      .cardbody h3 {
+        font-weight: 500;
+        margin: 8px 0 15px;
+      }
+      .specs {
+        display: flex;
+        gap: 12px;
+        font-size: 10px;
+        color: var(--muted);
+        border-top: 1px solid var(--line);
+        padding-top: 12px;
+      }
+      .rate {
+        font-size: 20px;
+        margin-top: 20px;
+      }
+      .rate small {
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .split {
+        display: grid;
+        grid-template-columns: 1.2fr 1fr;
+        gap: 28px;
+      }
+      .large-car {
+        background: #ebeae6;
+        min-height: 290px;
+        display: grid;
+        place-items: center;
+      }
+      .large-car img {
+        width: 100%;
+        height: 280px;
+        object-fit: contain;
+        padding: 20px;
+      }
+      .panel {
+        background: white;
+        border: 1px solid var(--line);
+        padding: 25px;
+        border-radius: 4px;
+      }
+      .panel h3 {
+        font-weight: 500;
+        font-size: 17px;
+      }
+      .fields {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 15px;
+        font-size: 11px;
+      }
+      .full {
+        grid-column: 1/-1;
+      }
+      .breakdown {
+        padding: 17px;
+        background: var(--ivory);
+        margin: 18px 0;
+        font-size: 12px;
+      }
+      .row {
+        display: flex;
+        justify-content: space-between;
+        padding: 8px 0;
+      }
+      .total {
+        border-top: 1px solid var(--line);
+        margin-top: 5px;
+        font-size: 18px;
+      }
+      .badge {
+        font-size: 9px;
+        border-radius: 3px;
+        background: #fff4df;
+        color: #986114;
+        padding: 5px 8px;
+        display: inline-block;
+      }
+      .green {
+        background: #eaf4ef;
+        color: #147d54;
+      }
+      .blue {
+        background: #edf2ff;
+        color: #2563eb;
+      }
+      .admin {
+        display: grid;
+        grid-template-columns: 175px 1fr;
+        min-height: 650px;
+      }
+      .side {
+        background: var(--navy);
+        color: #9facbd;
+        padding: 26px 18px;
+      }
+      .side .wordmark {
+        color: white;
+        font-size: 12px;
+        margin-bottom: 35px;
+      }
+      .side-link {
+        padding: 12px;
+        font-size: 10px;
+        margin: 6px 0;
+        border-radius: 3px;
+      }
+      .side-link.active {
+        background: #c6a36b16;
+        color: var(--gold);
+        border-left: 2px solid var(--gold);
+      }
+      .adminbody {
+        background: var(--ivory);
+        min-width: 0;
+      }
+      .adminbar {
+        padding: 20px 28px;
+        background: white;
+        border-bottom: 1px solid var(--line);
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .workspace {
+        padding: 28px;
+      }
+      .workspace h2 {
+        font-size: 30px;
+      }
+      .subtitle {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.7;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin: 20px 0;
+      }
+      .stat {
+        background: white;
+        border: 1px solid var(--line);
+        padding: 18px;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .stat strong {
+        display: block;
+        font:
+          30px Georgia,
+          serif;
+        color: var(--navy);
+        margin-top: 12px;
+      }
+      .charts {
+        display: grid;
+        grid-template-columns: 1.5fr 1fr;
+        gap: 15px;
+        margin: 20px 0;
+      }
+      .bars {
+        display: flex;
+        align-items: end;
+        justify-content: space-around;
+        height: 130px;
+        gap: 15px;
+        padding-top: 15px;
+      }
+      .bars i {
+        display: block;
+        width: 28px;
+        background: var(--gold);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        background: white;
+        font-size: 10px;
+      }
+      td,
+      th {
+        text-align: left;
+        padding: 15px 12px;
+        border-bottom: 1px solid var(--line);
+      }
+      th {
+        font-size: 9px;
+        color: var(--muted);
+        background: #faf9f7;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .tablebox {
+        overflow: auto;
+        border: 1px solid var(--line);
+      }
+      .calendar {
+        display: grid;
+        grid-template-columns: repeat(7, 1fr);
+        border-top: 1px solid var(--line);
+        border-left: 1px solid var(--line);
+        margin-top: 20px;
+      }
+      .day {
+        height: 70px;
+        background: white;
+        border-right: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+        padding: 7px;
+        font-size: 9px;
+      }
+      .event {
+        margin-top: 7px;
+        padding: 4px;
+        background: #edf2ff;
+        border-left: 2px solid #2563eb;
+        font-size: 8px;
+      }
+      .notes {
+        display: grid;
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 25px;
+        margin-top: 25px;
+      }
+      .notes div {
+        padding: 20px 0;
+        border-top: 1px solid var(--line);
+      }
+      .notes b {
+        font-size: 11px;
+      }
+      .notes p {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.7;
+        margin: 12px 0;
+      }
+      .loginmock {
+        background: var(--navy);
+        min-height: 570px;
+        display: grid;
+        place-items: center;
+        padding: 25px;
+      }
+      .loginmock .panel {
+        width: 330px;
+      }
+      .icon-strip {
+        display: flex;
+        gap: 22px;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 25px;
+      }
+      .icon-tile {
+        background: white;
+        border: 1px solid var(--line);
+        padding: 20px;
+        text-align: center;
+        min-width: 110px;
+      }
+      .icon-tile img {
+        width: 48px;
+        height: 48px;
+      }
+      .icon-tile small {
+        display: block;
+        color: var(--muted);
+        margin-top: 12px;
+      }
+      .section-head {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 15px;
+      }
+      .statusline {
+        display: flex;
+        gap: 8px;
+        margin: 15px 0;
+      }
+      .description {
+        font-size: 12px;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 700px;
+      }
+      .swatches {
+        display: flex;
+        gap: 20px;
+        flex-wrap: wrap;
+        margin: 25px 0;
+      }
+      .swatch {
+        font-size: 11px;
+        display: flex;
+        gap: 8px;
+        align-items: center;
+      }
+      .swatch i {
+        height: 22px;
+        width: 22px;
+        display: block;
+        border-radius: 50%;
+        border: 1px solid var(--line);
+      }
+      button:focus-visible,
+      select:focus-visible {
+        outline: 3px solid var(--gold);
+        outline-offset: 4px;
+      }
+      @media (max-width: 800px) {
+        .wrap {
+          padding: 30px 20px;
+        }
+        h1 {
+          font-size: 40px;
+        }
+        .logos {
+          grid-template-columns: 1fr;
+        }
+        .toolbar {
+          align-items: stretch;
+          flex-direction: column;
+        }
+        .admin {
+          grid-template-columns: 1fr;
+        }
+        .side {
+          display: none;
+        }
+        .mock,
+        .workspace {
+          padding: 20px;
+        }
+        .grid3 {
+          grid-template-columns: 1fr;
+        }
+        .split {
+          grid-template-columns: 1fr;
+        }
+        .nav-items {
+          display: none;
+        }
+        .hero {
+          padding: 30px;
+          min-height: 460px;
+        }
+        .hero h2 {
+          font-size: 36px;
+        }
+        .hero .car {
+          width: 90%;
+          height: 220px;
+          bottom: 5px;
+        }
+        .search {
+          grid-template-columns: 1fr 1fr;
+        }
+        .stats {
+          grid-template-columns: 1fr 1fr;
+        }
+        .charts {
+          grid-template-columns: 1fr;
+        }
+        .notes {
+          grid-template-columns: 1fr;
+        }
+        .fields {
+          grid-template-columns: 1fr;
+        }
+        .full {
+          grid-column: auto;
+        }
+        .public-nav {
+          padding: 20px;
+        }
+        .calendar .day {
+          height: 55px;
+          font-size: 8px;
+        }
+        .event {
+          font-size: 7px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="wrap">
+      <div class="topline">
+        <span>LOCATION / Design exploration</span
+        ><span>01 — Midnight Editorial</span>
+      </div>
+      <div class="eyebrow">Une identité. Chaque détail.</div>
+      <h1>Le voyage commence<br />par une impression.</h1>
+      <p class="intro">
+        Propositions UI pour chaque page et trois pistes de logo. Une direction
+        premium cohérente : Midnight Navy, Champagne Gold et Warm Ivory. Les
+        écrans ci-dessous sont des propositions de présentation, distinctes des
+        workflows fonctionnels de l’application.
+      </p>
+      <div class="swatches">
+        <span class="swatch"><i style="background: #101c2c"></i>#101C2C</span
+        ><span class="swatch"><i style="background: #26374b"></i>#26374B</span
+        ><span class="swatch"><i style="background: #c6a36b"></i>#C6A36B</span
+        ><span class="swatch"><i style="background: #f5f3ef"></i>#F5F3EF</span>
+      </div>
+      <div class="logos">
+        <button class="logo" data-logo="route-l" aria-pressed="true">
+          <img
+            src="../public/brand/route-l.svg"
+            alt="Route L logo proposal"
+          /><strong>01 / Route L — recommandé</strong
+          ><span
+            >Une route en L et un point d’arrivée. Distinctif, simple et
+            reconnaissable en petit format.</span
+          ></button
+        ><button class="logo" data-logo="apex" aria-pressed="false">
+          <img src="../public/brand/apex.svg" alt="Apex logo proposal" /><strong
+            >02 / Apex</strong
+          ><span
+            >Un blason géométrique et un mouvement vers l’avant. Plus sportif et
+            affirmé.</span
+          ></button
+        ><button class="logo" data-logo="compass" aria-pressed="false">
+          <img
+            src="../public/brand/compass.svg"
+            alt="Journey Compass logo proposal"
+          /><strong>03 / Journey Compass</strong
+          ><span
+            >Un repère de navigation raffiné. L’exploration et les routes du
+            Maroc comme signature.</span
+          >
+        </button>
+      </div>
+      <div class="toolbar">
+        <div>
+          <div class="eyebrow">Propositions par écran</div>
+          <h2 style="margin: 0">Une expérience complète.</h2>
+        </div>
+        <label
+          >Page à explorer
+          <select id="page" aria-label="Page à explorer"></select
+        ></label>
+      </div>
+      <nav
+        id="page-index"
+        aria-label="Tous les écrans proposés"
+        style="
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 8px;
+          margin: 0 0 24px;
+        "
+      ></nav>
+      <div class="frame">
+        <div class="browserbar"><i></i><i></i><i></i></div>
+        <div id="screen"></div>
+      </div>
+      <div class="notes">
+        <div>
+          <b id="note-title">Hiérarchie</b>
+          <p id="note-layout"></p>
+        </div>
+        <div>
+          <b>Action principale</b>
+          <p id="note-action"></p>
+        </div>
+        <div>
+          <b>Mobile et états</b>
+          <p>
+            Contenu empilé, actions de 44 px minimum, focus visible, erreurs à
+            côté du champ et animation réduite selon les préférences.
+          </p>
+        </div>
+      </div>
+      <div class="icon-strip">
+        <div class="icon-tile">
+          <img
+            src="../public/brand/icon-route.svg"
+            alt="Route L application icon"
+          /><small>App icon / favicon</small>
+        </div>
+        <p class="description">
+          Icônes d’interface : traits fins et cohérents, formes simples et
+          libellés visibles. L’or souligne l’action ; les couleurs de statut
+          gardent leur sens opérationnel.
+        </p>
+      </div>
+    </main>
+    <script>
+      const pages = [
+        [
+          "home",
+          "Public · Accueil",
+          "Extraordinary cars.",
+          "Hero cinématique navy, véhicule détouré, titre éditorial et recherche de dates juste après le hero.",
+          "Find your drive",
+        ],
+        [
+          "fleet",
+          "Public · Collection",
+          "The collection.",
+          "Filtres compacts, cartes aérées, photographie au centre et prix en DH lisibles.",
+          "Book now",
+        ],
+        [
+          "vehicle",
+          "Public · Détail véhicule",
+          "Mercedes-Benz C-Class",
+          "Galerie à gauche et réservation à droite. Les spécifications et tarifs restent à portée de vue.",
+          "Request reservation",
+        ],
+        [
+          "booking",
+          "Public · Réservation",
+          "Your journey, considered.",
+          "Dates, lieux, devis calculé au serveur et informations client dans cet ordre.",
+          "Request reservation",
+        ],
+        [
+          "confirmation",
+          "Public · Confirmation",
+          "Your next journey is taking shape.",
+          "Référence privée, statut honnête PENDING, période, total et expiration du maintien.",
+          "Check booking status",
+        ],
+        [
+          "about",
+          "Public · À propos",
+          "The journey is the occasion.",
+          "Mise en page éditoriale, histoire de marque, principes numérotés et photographie immersive.",
+          "Explore the collection",
+        ],
+        [
+          "services",
+          "Public · Services",
+          "Every detail. Considered.",
+          "Trois offres claires et un aperçu des lieux de prise en charge sans surcharger la page.",
+          "Choose your vehicle",
+        ],
+        [
+          "contact",
+          "Public · Contact",
+          "Start with a conversation.",
+          "Zones de service et assistance, avec uniquement les coordonnées réelles fournies par l’entreprise.",
+          "Plan your drive",
+        ],
+        [
+          "login",
+          "Admin · Connexion",
+          "Welcome back.",
+          "Un formulaire blanc sur navy, peu de distractions et une signature de marque compacte.",
+          "Sign in",
+        ],
+        [
+          "dashboard",
+          "Admin · Tableau de bord",
+          "Welcome to your workspace.",
+          "Vue synthétique : indicateurs réels, graphiques sobres et réservations récentes.",
+          "Review pending requests",
+        ],
+        [
+          "cars",
+          "Admin · Flotte",
+          "Fleet management",
+          "Recherche, filtre actif/archivé, cartes véhicule et action d’ajout bien visible.",
+          "Add vehicle",
+        ],
+        [
+          "car-form",
+          "Admin · Ajouter / modifier véhicule",
+          "Vehicle details",
+          "Sections distinctes pour identité, spécifications, tarifs, galerie et archivage.",
+          "Save vehicle",
+        ],
+        [
+          "reservations",
+          "Admin · Réservations",
+          "Reservations",
+          "Tableau lisible, filtres de statut et vue rapide des dates, clients et montants.",
+          "Manage reservation",
+        ],
+        [
+          "reservation-detail",
+          "Admin · Détail réservation",
+          "LOC-2026-001",
+          "Édition des dates et du véhicule, devis, client, paiements et historique chronologique.",
+          "Validate, recalculate & save",
+        ],
+        [
+          "customers",
+          "Admin · Clients",
+          "Customers",
+          "Annuaire compact avec contact, nombre de réservations et accès au profil.",
+          "View customer",
+        ],
+        [
+          "customer-detail",
+          "Admin · Profil client",
+          "Customer profile",
+          "Informations de contact modifiables et historique des locations relié au profil.",
+          "Save profile",
+        ],
+        [
+          "calendar",
+          "Admin · Calendrier",
+          "Availability calendar",
+          "Choix du véhicule, vue mensuelle et périodes colorées ; panneau de blocage et maintenance.",
+          "Block dates",
+        ],
+        [
+          "pricing",
+          "Admin · Tarification",
+          "Pricing",
+          "Matrice des tarifs indépendants et distinction claire entre remises héritées et personnalisées.",
+          "Edit rates",
+        ],
+        [
+          "settings",
+          "Admin · Paramètres",
+          "Settings",
+          "Petites sections : remises par défaut, expiration des demandes et politique de blocage.",
+          "Save settings",
+        ],
+      ];
+      const screen = document.getElementById("screen"),
+        select = document.getElementById("page");
+      let logo = "route-l";
+      const mark = () =>
+        `<span class="wordmark"><img src="../public/brand/icon-route.svg" alt="">LOCATION<span style="color:#c6a36b">∙</span></span>`;
+      const button = (t) => `<span class="btn">${t} ↗</span>`;
+      const field = (label, value = "") =>
+        `<div><div>${label}</div><div class="input">${value || "—"}</div></div>`;
+      const cards = () =>
+        `<div class="grid3">${[
+          ["Mercedes-Benz", "C-Class", "mercedes.png", "500"],
+          ["BMW", "M2", "bmw.png", "850"],
+          ["Porsche", "Boxster", "porsche.png", "1,600"],
+        ]
+          .map(
+            (v) =>
+              `<div class="card"><div class="card-media"><img src="../public/vehicles/${v[2]}" alt="${v[0]} ${v[1]}"></div><div class="cardbody"><small>${v[0].toUpperCase()}</small><h3>${v[1]}</h3><div class="specs"><span>Automatic</span><span>Premium</span><span>2025</span></div><div class="rate">${v[3]} DH <small>/ day</small></div></div></div>`,
+          )
+          .join("")}</div>`;
+      const quote = () =>
+        `<div class="breakdown"><div class="row"><span>7 days · weekly rate</span><span>3,000 DH</span></div><div class="row"><span>Weekly discount · 5%</span><span>−150 DH</span></div><div class="row total"><span>Total</span><span>2,850 DH</span></div></div>`;
+      const booking = () =>
+        `<div class="panel"><div class="eyebrow">Your journey starts here</div><h3>Reserve this vehicle</h3><div class="fields">${field("Pickup date", "18 / 12 / 2026")}${field("Return date", "25 / 12 / 2026")}${field("Pickup location", "Casablanca")}${field("Return location", "Marrakech")}</div>${quote()}<div class="fields">${field("Full name", "Your full name")}${field("Email address", "you@example.com")}${field("Phone", "+212 …")}${field("CIN / Passport", "Identification number")}</div><div style="margin-top:20px">${button("Request reservation")}</div></div>`;
+      const table = (kind = "reservations") =>
+        `<div class="tablebox"><table><thead><tr>${(kind === "pricing" ? ["Vehicle", "Daily", "Weekly", "Monthly", "Discount"] : kind === "customers" ? ["Customer", "Email", "Phone", "Bookings", ""] : ["Reference", "Customer", "Vehicle", "Total", "Status"]).map((v) => `<th>${v}</th>`).join("")}</tr></thead><tbody>${[
+          0, 1, 2, 3,
+        ]
+          .map(
+            (n) =>
+              `<tr>${(kind === "pricing"
+                ? [
+                    ["C-Class", "500 DH", "3,000 DH", "9,000 DH", "5% / 1%"],
+                    ["BMW M2", "850 DH", "5,100 DH", "18,500 DH", "5% / 1%"],
+                  ][n % 2]
+                : kind === "customers"
+                  ? [
+                      "Customer " + (n + 1),
+                      "customer@example.com",
+                      "+212 6…",
+                      String(n + 1),
+                      "View ↗",
+                    ]
+                  : [
+                      "LOC-260" + (n + 1),
+                      "Customer " + (n + 1),
+                      ["C-Class", "BMW M2", "Boxster"][n % 3],
+                      "2,850 DH",
+                      `<span class="badge ${n % 2 ? "blue" : ""}">${n % 2 ? "CONFIRMED" : "PENDING"}</span>`,
+                    ]
+              )
+                .map((v) => `<td>${v}</td>`)
+                .join("")}</tr>`,
+          )
+          .join("")}</tbody></table></div>`;
+      function adminBody(id) {
+        if (id === "dashboard")
+          return `<div class="stats">${[
+            ["Total vehicles", "24"],
+            ["Available now", "18"],
+            ["Active rentals", "4"],
+            ["Pending requests", "6"],
+          ]
+            .map(
+              (v) => `<div class="stat">${v[0]}<strong>${v[1]}</strong></div>`,
+            )
+            .join(
+              "",
+            )}</div><div class="charts"><div class="panel"><h3>Monthly revenue</h3><div class="bars">${[45, 65, 52, 90, 80, 120].map((h) => `<i style="height:${h}px"></i>`).join("")}</div></div><div class="panel"><h3>Fleet utilization</h3><div style="font:60px Georgia;color:var(--gold);margin:25px 0">72%</div><small>Illustrative design data</small></div></div>${table()}`;
+        if (id === "cars")
+          return `<div class="section-head" style="margin:20px 0"><div class="input" style="width:60%">Search brand, model or registration</div>${button("Add vehicle")}</div>${cards()}`;
+        if (id === "car-form")
+          return `<div class="panel"><h3>Identity & specifications</h3><div class="fields">${field("Brand", "Mercedes-Benz")}${field("Model", "C-Class")}${field("Registration", "00000-A-00")}${field("Category", "Executive")}${field("Transmission", "Automatic")}${field("Seats", "5")}</div><h3 style="margin-top:30px">Independent rental rates · DH</h3><div class="fields">${field("Daily", "500")}${field("Weekly", "3,000")}${field("Monthly", "9,000")}${field("Discount override", "Inherit defaults")}</div><div style="margin-top:25px">${button("Save vehicle")}</div></div>`;
+        if (id === "reservations")
+          return `<div class="statusline"><span class="badge">Pending</span><span class="badge blue">Confirmed</span><span class="badge green">Active</span></div>${table()}`;
+        if (id === "reservation-detail")
+          return `<div class="split"><div class="panel"><h3>Period & vehicle</h3><div class="fields">${field("Vehicle", "Mercedes-Benz C-Class")}${field("Status", "PENDING")}${field("Pickup", "18 / 12 / 2026")}${field("Return", "25 / 12 / 2026")}</div>${quote()}${button("Validate & save")}</div><div class="panel"><h3>Customer snapshot</h3><p class="subtitle">Original contact and identity information remain linked to this booking.</p><hr style="border:0;border-top:1px solid var(--line);margin:25px 0"><h3>Modification history</h3><p class="subtitle">CREATED · 12 November<br/>Quote and customer snapshots saved.</p></div></div>`;
+        if (id === "customers") return table("customers");
+        if (id === "customer-detail")
+          return `<div class="panel"><h3>Contact details</h3><div class="fields">${field("Full name", "Customer name")}${field("Email", "customer@example.com")}${field("Phone", "+212 6…")}${field("License", "Driving license number")}</div><div style="margin-top:25px">${button("Save profile")}</div></div><h3 style="margin-top:25px">Rental history</h3>${table()}`;
+        if (id === "calendar")
+          return `<div class="section-head"><span class="input">All vehicles ▾</span><span>December 2026</span>${button("Block dates")}</div><div class="calendar">${Array.from({ length: 35 }, (_, i) => `<div class="day">${(i % 31) + 1}${i >= 8 && i <= 11 ? '<div class="event">C-Class · Confirmed</div>' : i >= 20 && i <= 23 ? '<div class="event" style="background:#eef0f3;border-color:#64748b">Maintenance</div>' : ""}</div>`).join("")}</div>`;
+        if (id === "pricing")
+          return `<div class="panel" style="margin-bottom:20px"><div class="eyebrow">Default discounts</div><h3>5% weekly · 1% monthly</h3><p class="subtitle">30-day months → 7-day weeks → remaining days.</p></div>${table("pricing")}`;
+        return `<div class="panel"><h3>Pricing defaults</h3><div class="fields">${field("Weekly discount", "5%")}${field("Monthly discount", "1%")}</div><h3 style="margin-top:30px">Pending reservation policy</h3><div class="fields">${field("Expiration", "24 hours")}${field("Block availability", "Enabled")}</div><p class="subtitle" style="margin-top:25px">Currency: MAD / DH. Vehicle-specific overrides take precedence.</p>${button("Save settings")}</div>`;
+      }
+      function render() {
+        const [id, label, title, layout, action] =
+          pages.find((v) => v[0] === select.value) || pages[0];
+        document.getElementById("note-layout").textContent = layout;
+        document.getElementById("note-action").textContent = action;
+        let html = "";
+        const isAdmin = pages.findIndex((v) => v[0] === id) >= 9;
+        if (id === "login")
+          html = `<div class="loginmock"><div class="panel">${mark()}<div class="eyebrow" style="margin-top:25px">Administration</div><h2>Welcome back.</h2><div class="fields" style="grid-template-columns:1fr">${field("Email", "admin@location.local")}${field("Password", "••••••••••••")}</div><div style="margin-top:25px">${button("Sign in")}</div></div></div>`;
+        else if (isAdmin)
+          html = `<div class="admin"><aside class="side">${mark()}${[
+            ["dashboard", "Overview"],
+            ["cars", "Fleet management"],
+            ["reservations", "Reservations"],
+            ["customers", "Customers"],
+            ["calendar", "Availability"],
+            ["pricing", "Pricing"],
+            ["settings", "Settings"],
+          ]
+            .map(
+              ([key, name]) =>
+                `<div class="side-link ${id.startsWith(key) || (id === "car-form" && key === "cars") || (id === "reservation-detail" && key === "reservations") || (id === "customer-detail" && key === "customers") ? "active" : ""}">${name}</div>`,
+            )
+            .join(
+              "",
+            )}</aside><div class="adminbody"><div class="adminbar">Workspace / ${label.split(" · ")[1]}</div><div class="workspace"><div class="eyebrow">Management workspace</div><h2>${title}</h2><p class="subtitle">${layout}</p>${adminBody(id)}</div></div></div>`;
+        else {
+          html = `<div class="public-nav">${mark()}<div class="nav-items"><span>Home</span><span>Our cars</span><span>Our story</span><span>Services</span><span>Contact</span></div>${button("Find your drive")}</div>`;
+          if (id === "home")
+            html += `<div class="hero"><div class="eyebrow" style="color:var(--gold)">The art of the journey</div><h2>Extraordinary cars.<br/><em>Unforgettable roads.</em></h2><p>A considered collection.<br/>An effortless Moroccan journey.</p><img class="car" src="../public/vehicles/mercedes.png" alt="Mercedes-Benz hero study"><div style="position:absolute;bottom:30px;font-size:11px">01 ───── SCROLL TO EXPLORE</div></div><div class="search">${field("Pickup location", "Casablanca")}${field("Pickup date", "18 / 12 / 2026")}${field("Return date", "25 / 12 / 2026")}${button("Find a vehicle")}</div>`;
+          else if (id === "fleet")
+            html += `<div class="mock"><div class="eyebrow">A drive for every desire</div><h2>${title}</h2><div class="search" style="padding:15px 0;background:none;margin-bottom:25px">${field("Brand", "All brands")}${field("Category", "All categories")}${field("Dates", "Choose your dates")}${button("Filter")}</div>${cards()}</div>`;
+          else if (id === "vehicle" || id === "booking")
+            html += `<div class="mock"><div class="eyebrow">Executive · Morocco</div><h2>${title}</h2><div class="split"><div><div class="large-car"><img src="../public/vehicles/mercedes.png" alt="Mercedes-Benz C-Class"></div><p class="description" style="margin-top:20px">A composed executive saloon, designed around effortless long-distance comfort.</p><div class="panel"><h3>Independent rental rates</h3><p>500 DH / day · 3,000 DH / week · 9,000 DH / month</p></div></div>${booking()}</div></div>`;
+          else if (id === "confirmation")
+            html += `<div class="mock" style="padding:50px 12%"><div class="eyebrow">Reservation received</div><h2>${title}</h2><div class="panel"><span class="badge">PENDING</span><h3 style="margin-top:20px">LOC-2026-001</h3><p>Mercedes-Benz C-Class</p><p class="subtitle">18 December → 25 December · 7 days<br/>Casablanca → Marrakech</p>${quote()}<p class="subtitle">Our team reviews your request before confirming. Your private status link keeps you informed.</p></div></div>`;
+          else
+            html += `<div class="mock" style="padding:50px"><div class="eyebrow">${id === "about" ? "The LOCATION philosophy" : id === "services" ? "Considered at every turn" : "Your next chapter"}</div><h2 style="font-size:48px">${title}</h2><p class="description">${layout}</p><div class="grid3" style="margin:35px 0">${["A considered collection", "Your journey, your terms", "Simply effortless"].map((v, i) => `<div class="panel"><div class="eyebrow">0${i + 1}</div><h3>${v}</h3><p class="subtitle">Clear information, generous space and a thoughtful experience from the first step.</p></div>`).join("")}</div>${button(action)}</div>`;
+        }
+        screen.innerHTML = html;
+        document.querySelectorAll(".wordmark img").forEach((img) => {
+          if (logo === "route-l") {
+            img.src = "../public/brand/icon-route.svg";
+            img.style.width = "32px";
+            img.style.height = "32px";
+          } else {
+            img.src = "../public/brand/" + logo + ".svg";
+            img.style.width = "96px";
+            img.style.height = "32px";
+          }
+        });
+      }
+      pages.forEach(([id, label]) => {
+        const option = document.createElement("option");
+        option.value = id;
+        option.textContent = label;
+        select.append(option);
+        const link = document.createElement("a");
+        link.href = "?page=" + id + "#screen";
+        link.textContent = label;
+        link.style.cssText =
+          "display:block;padding:12px 14px;background:white;border:1px solid #e5e3df;border-radius:3px;color:#26374b;text-decoration:none;font-size:11px";
+        link.addEventListener("click", (event) => {
+          event.preventDefault();
+          select.value = id;
+          render();
+          history.replaceState(null, "", "?page=" + id + "#screen");
+          screen.scrollIntoView({ block: "start", behavior: "smooth" });
+        });
+        document.getElementById("page-index").append(link);
+      });
+      const requested = new URLSearchParams(location.search).get("page");
+      if (pages.some(([id]) => id === requested)) select.value = requested;
+      select.addEventListener("change", () => {
+        render();
+        history.replaceState(null, "", "?page=" + select.value + "#screen");
+      });
+      document.querySelectorAll("[data-logo]").forEach((btn) =>
+        btn.addEventListener("click", () => {
+          logo = btn.dataset.logo;
+          document
+            .querySelectorAll("[data-logo]")
+            .forEach((b) => b.setAttribute("aria-pressed", String(b === btn)));
+          render();
+        }),
+      );
+      render();
+    </script>
+  </body>
+</html>

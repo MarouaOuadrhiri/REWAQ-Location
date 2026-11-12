@@ -1,0 +1,13 @@
+# Consistent source line endings on Windows, macOS and Linux.
+* text=auto eol=lf
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.webp binary
+*.pdf binary
+*.zip binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.bat text eol=crlf
+*.cmd text eol=crlf

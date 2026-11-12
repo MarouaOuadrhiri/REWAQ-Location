@@ -1,0 +1,180 @@
+/* Approved identity: Option 1 - Medina Motion. Status colors retain their meaning. */
+:root {
+  --brand-forest: #103e38;
+  --brand-terracotta: #c86a4a;
+  --brand-sand: #e8d6ba;
+  --brand-ivory: #faf7f1;
+  --brand-ink: #263c36;
+  --navy: #103e38;
+  --deep: #1d5148;
+  --gold: #c86a4a;
+  --ivory: #faf7f1;
+  --muted: #63766d;
+  --border: #e4dcd0;
+  --text: #263c36;
+}
+body {
+  background: var(--brand-ivory);
+  color: var(--brand-ink);
+}
+.brand > span.brand-wordmark {
+  margin-left: 0;
+  display: block;
+  color: inherit;
+  font-size: 23px;
+  line-height: 1.1;
+  letter-spacing: 0.1em;
+  font-weight: 750;
+}
+.brand-wordmark > small {
+  display: block;
+  font-size: 7px;
+  letter-spacing: 0.18em;
+  margin-top: 7px;
+  font-weight: 500;
+  color: #e8d6ba;
+}
+.brand img {
+  border: 0;
+  border-radius: 0;
+  width: 39px;
+  height: 44px;
+  object-fit: contain;
+}
+.button {
+  background: #103e38;
+  border-color: #103e38;
+  color: #faf7f1;
+}
+.button:hover {
+  background: #1d5148;
+  color: #faf7f1;
+}
+.button.light {
+  background: white;
+  color: #103e38;
+  border-color: #d5ded3;
+}
+.button.light:hover {
+  background: #eef2ec;
+  color: #103e38;
+}
+.button.outline {
+  background: transparent;
+  color: #faf7f1;
+  border-color: #e8d6ba88;
+}
+.button.outline:hover {
+  background: #ffffff10;
+  color: #faf7f1;
+}
+.arrival-copy h1 em {
+  color: #e8d6ba;
+}
+.hero-points svg {
+  color: #e8d6ba;
+}
+.destination-pill {
+  color: #e8d6ba;
+  border-color: #e8d6ba55;
+}
+.booking-search {
+  border-color: #c86a4a;
+  background: #c86a4a;
+}
+.header-login {
+  border-color: #e8d6ba77;
+}
+.travel-nav > a:first-child {
+  border-color: #e8d6ba88;
+}
+.arrival-tag > span,
+.arrival-tag svg,
+.hero-info .price {
+  color: #e8d6ba;
+}
+.cinematic-collection .eyebrow,
+.hero .eyebrow {
+  color: #e8d6ba;
+}
+.arrival-orbit {
+  border-color: #e8d6ba33;
+  background: linear-gradient(130deg, #1d514888, #103e3800);
+}
+.sidebar nav a.active {
+  color: #faf7f1;
+  border-left-color: #c86a4a;
+  background: #ffffff10;
+}
+.admin-content .bars i {
+  background: #c86a4a;
+}
+.sidebar .brand img {
+  width: 27px;
+  height: 31px;
+}
+.login .brand img {
+  width: 36px;
+  height: 40px;
+}
+.airport-visual {
+  color: #e8d6ba;
+}
+.airport-visual > svg {
+  color: #faf7f1;
+}
+.airport-detail > svg,
+.benefit-strip > div > svg {
+  color: #103e38;
+}
+.icon-tile,
+.brand-lockup {
+  background: #faf7f1;
+}
+.flight-fields {
+  background: #eef2ec;
+  border-color: #d5e1d8;
+}
+.info-art {
+  color: #e8d6ba;
+}
+.info-art .eyebrow {
+  color: #e8d6ba;
+}
+.footer-location {
+  color: #e8d6ba;
+}
+.admin-content .stat .value {
+  color: #103e38;
+}
+.brand > span:not(.brand-wordmark) {
+  color: #e8d6ba;
+}
+@media (max-width: 700px) {
+  .brand > span.brand-wordmark {
+    font-size: 18px;
+    letter-spacing: 0.07em;
+  }
+  .brand-wordmark > small {
+    font-size: 5.5px;
+    letter-spacing: 0.1em;
+    margin-top: 5px;
+  }
+  .brand img {
+    width: 29px;
+    height: 34px;
+  }
+  .brand {
+    gap: 7px;
+  }
+  .header-utilities {
+    gap: 12px;
+  }
+  .currency-label {
+    display: none;
+  }
+  .sidebar .brand img {
+    width: 25px;
+    height: 28px;
+  }
+}

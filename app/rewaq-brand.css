@@ -1,0 +1,853 @@
+/* REWAQ Location - approved identity, contemporary R/route monogram. */
+.rewaq-meaning {
+  background: #103e38;
+  color: #faf7f1;
+  border-radius: 10px;
+  padding: 34px;
+  margin: 30px 0;
+}
+.rewaq-meaning .eyebrow {
+  color: #e8d6ba;
+}
+.rewaq-meaning h2 {
+  font-size: 27px;
+  line-height: 1.25;
+}
+.rewaq-meaning p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #c5d8cc;
+  max-width: 730px;
+  margin: 0;
+}
+.carousel-dots button,
+.carousel-buttons button {
+  min-width: 44px;
+  min-height: 44px;
+}
+.brand > span.brand-wordmark {
+  font-size: 25px;
+  letter-spacing: 0.12em;
+}
+.brand-wordmark > small {
+  font-size: 8px;
+  letter-spacing: 0.26em;
+  font-weight: 600;
+}
+.brand img {
+  width: 43px;
+  height: 46px;
+}
+.hero-carousel {
+  position: relative;
+  min-width: 0;
+  padding: 16px 0 8px;
+  color: #faf7f1;
+  isolation: isolate;
+}
+.hero-carousel .arrival-orbit {
+  inset: 0 3% 0 8%;
+  width: auto;
+  height: 100%;
+  z-index: -1;
+  transform: rotate(-7deg);
+  border-radius: 47% 47% 10% 10%;
+  background: linear-gradient(135deg, #1d514877, transparent);
+}
+.carousel-category {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9px;
+  letter-spacing: 0.17em;
+  color: #e8d6ba;
+  padding: 0 10px;
+  gap: 10px;
+}
+.carousel-category > span {
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+}
+.carousel-slide > a {
+  display: block;
+}
+.carousel-car {
+  width: 108%;
+  max-width: none;
+  height: 260px;
+  object-fit: contain;
+  margin: 0 -4%;
+  filter: drop-shadow(0 25px 14px #0004);
+}
+.carousel-caption {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 14px;
+}
+.carousel-caption h2 {
+  font-size: 20px;
+  line-height: 1.3;
+  margin: 0 0 6px;
+  letter-spacing: -0.025em;
+}
+.carousel-caption p {
+  font-size: 10px;
+  color: #c5d8cc;
+  margin: 0;
+}
+.carousel-caption strong {
+  font-size: 19px;
+  color: #e8d6ba;
+  margin-left: 5px;
+}
+.carousel-caption small {
+  font-size: 10px;
+}
+.carousel-details {
+  font-size: 11px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  border-bottom: 1px solid #c86a4a;
+  padding-bottom: 6px;
+}
+.carousel-controls {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  align-items: center;
+  margin: 20px 14px 0;
+  border-top: 1px solid #ffffff1c;
+  padding-top: 12px;
+}
+.carousel-dots,
+.carousel-buttons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.carousel-dots button {
+  border: 0;
+  background: transparent;
+  width: 32px;
+  min-height: 38px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.carousel-dots button span {
+  width: 23px;
+  height: 3px;
+  background: #ffffff40;
+  border-radius: 3px;
+  transition:
+    background 0.2s,
+    width 0.2s;
+}
+.carousel-dots button[aria-pressed="true"] span {
+  background: #e8d6ba;
+  width: 32px;
+}
+.carousel-buttons button {
+  border: 1px solid #ffffff30;
+  border-radius: 50%;
+  background: #ffffff08;
+  color: #faf7f1;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+.carousel-buttons button:hover {
+  background: #ffffff20;
+}
+.carousel-buttons button:disabled {
+  opacity: 0.3;
+  cursor: default;
+}
+.carousel-note {
+  display: block;
+  font-size: 9px;
+  color: #c5d8cc;
+  margin: 12px 14px 0;
+}
+.carousel-slide {
+  animation: rewaq-arrival 0.45s ease-out;
+}
+@keyframes rewaq-arrival {
+  from {
+    opacity: 0.3;
+    transform: translateX(16px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.sidebar .brand {
+  font-size: 19px;
+  letter-spacing: 0.12em;
+}
+.sidebar .brand img {
+  width: 32px;
+  height: 35px;
+}
+.login .brand img {
+  width: 41px;
+  height: 44px;
+}
+.login .brand {
+  font-size: 24px;
+}
+.footer .brand-wordmark > small {
+  color: #e8d6ba;
+}
+@media (max-width: 700px) {
+  .brand > span.brand-wordmark {
+    font-size: 22px;
+  }
+  .brand-wordmark > small {
+    font-size: 6px;
+    letter-spacing: 0.22em;
+    margin-top: 6px;
+  }
+  .brand img {
+    width: 33px;
+    height: 37px;
+  }
+  .hero-carousel {
+    margin: 28px auto 0;
+    max-width: 460px;
+    padding-top: 15px;
+  }
+  .carousel-car {
+    height: 215px;
+    width: 100%;
+    margin: 0;
+  }
+  .carousel-caption h2 {
+    font-size: 17px;
+  }
+  .carousel-caption strong {
+    font-size: 17px;
+  }
+  .carousel-details {
+    font-size: 10px;
+  }
+  .carousel-category {
+    font-size: 8px;
+    letter-spacing: 0.13em;
+  }
+  .carousel-caption {
+    padding: 0 9px;
+  }
+  .carousel-controls {
+    margin: 15px 9px 0;
+    padding-top: 10px;
+  }
+  .carousel-note {
+    font-size: 8px;
+    margin: 10px 9px 0;
+  }
+  .carousel-buttons button {
+    width: 38px;
+    height: 38px;
+  }
+  .arrival-inner {
+    padding-bottom: 62px;
+  }
+  .hero-carousel .arrival-orbit {
+    inset: 3px 1% 25px;
+    border-radius: 50% 50% 10% 10%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .carousel-slide {
+    animation: none;
+  }
+  .carousel-dots button span {
+    transition: none;
+  }
+}
+/* Split editorial hero inspired by the supplied layout, using REWAQ's identity. */
+.nav-editorial {
+  background: #faf7f1 !important;
+  color: #103e38 !important;
+  border-bottom: 1px solid #103e3812;
+}
+.nav-editorial .brand,
+.nav-editorial .brand-wordmark,
+.nav-editorial .brand-wordmark small,
+.nav-editorial .header-utilities,
+.nav-editorial .travel-nav a {
+  color: #103e38 !important;
+}
+.nav-editorial .brand img {
+  content: url("/brand/rewaq-symbol.svg");
+}
+.nav-editorial .header-login {
+  background: #103e38;
+  color: #faf7f1 !important;
+  border-radius: 30px;
+}
+.nav-editorial .travel-nav a {
+  border-color: #103e3820;
+}
+.editorial-hero {
+  display: grid;
+  grid-template-columns: 0.8fr 1.2fr;
+  gap: 35px;
+  padding-top: 20px;
+  padding-bottom: 32px;
+  color: #103e38;
+  min-height: 620px;
+}
+.editorial-copy {
+  padding: 35px 0 12px;
+  min-width: 0;
+}
+.editorial-eyebrow {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 10px;
+  font-weight: 650;
+  letter-spacing: 0.12em;
+  margin-bottom: 24px;
+}
+.editorial-copy h1 {
+  font-size: clamp(46px, 5.3vw, 76px);
+  line-height: 1.01;
+  letter-spacing: -0.065em;
+  font-weight: 650;
+  margin: 0 0 22px;
+}
+.editorial-copy h1 em {
+  font-style: normal;
+  color: #c86a4a;
+}
+.editorial-copy > p {
+  font-size: 12px;
+  line-height: 1.8;
+  color: #65726c;
+  margin: 0 0 23px;
+}
+.editorial-cta {
+  display: inline-flex;
+  gap: 30px;
+  align-items: center;
+  border-radius: 28px;
+  background: #103e38;
+  color: #fff;
+  padding: 13px 20px;
+  font-size: 12px;
+}
+.editorial-line {
+  display: flex;
+  align-items: center;
+  gap: 17px;
+  max-width: 280px;
+  margin: 32px 0;
+  color: #9ba49e;
+}
+.editorial-line span {
+  flex: 1;
+  border-top: 1px dashed #103e3835;
+}
+.editorial-why {
+  display: flex;
+  gap: 12px;
+  max-width: 250px;
+  align-items: flex-start;
+}
+.editorial-why > svg {
+  flex-shrink: 0;
+  color: #c86a4a;
+}
+.editorial-why strong {
+  font-size: 9px;
+  letter-spacing: 0.1em;
+}
+.editorial-why p {
+  font-size: 11px;
+  line-height: 1.7;
+  color: #65726c;
+  margin: 7px 0 0;
+}
+.editorial-pagination {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 30px;
+}
+.editorial-pagination > strong {
+  font-size: 27px;
+  font-weight: 500;
+  letter-spacing: -0.06em;
+}
+.editorial-pagination > span {
+  font-size: 12px;
+  color: #8b958f;
+}
+.editorial-arrows {
+  display: flex;
+  gap: 7px;
+  margin-left: auto;
+  padding-right: 15px;
+}
+.editorial-arrows button {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1px solid #103e3820;
+  background: transparent;
+  display: grid;
+  place-items: center;
+  color: #103e38;
+}
+.editorial-arrows button:hover {
+  background: #e8d6ba;
+}
+.editorial-arrows button:disabled {
+  opacity: 0.35;
+}
+.editorial-stage {
+  position: relative;
+  min-width: 0;
+  min-height: 565px;
+  isolation: isolate;
+}
+.editorial-landscape {
+  position: absolute;
+  inset: 0;
+  border-radius: 28px;
+  background:
+    linear-gradient(
+      180deg,
+      #103e3810 0%,
+      #103e3800 25%,
+      #103e3855 55%,
+      #153b32eb 100%
+    ),
+    url("/vehicles/atlas-landscape.jpg") center 44% / cover;
+  z-index: -2;
+}
+.editorial-stage:after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 50%;
+  background: linear-gradient(165deg, transparent, #c7b39525);
+  z-index: -1;
+  border-radius: 0 0 28px 28px;
+}
+.editorial-featured {
+  position: absolute;
+  top: 25px;
+  left: 20px;
+  background: #faf7f1;
+  padding: 12px 8px;
+  border-radius: 20px;
+  writing-mode: vertical-rl;
+  font-size: 8px;
+  letter-spacing: 0.08em;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.editorial-featured span {
+  background: #103e38;
+  color: white;
+  border-radius: 50%;
+  padding: 5px;
+}
+.editorial-spec {
+  position: absolute;
+  right: 28px;
+  top: 85px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: #faf7f1ed;
+  padding: 13px 20px;
+  border-radius: 12px;
+  font-size: 11px;
+  box-shadow: 0 10px 30px #0001;
+}
+.editorial-vehicle {
+  position: absolute;
+  inset: 130px -25px auto -30px;
+  animation: rewaq-arrival 0.45s ease-out;
+}
+.editorial-vehicle > a:first-child {
+  display: block;
+}
+.editorial-vehicle img {
+  width: 100%;
+  height: 290px;
+  object-fit: contain;
+  filter: drop-shadow(0 23px 12px #0006);
+}
+.editorial-price {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: #faf7f1;
+  color: #103e38;
+  padding: 15px 18px;
+  border-radius: 14px;
+  width: max-content;
+  max-width: 90%;
+  margin: -10px 48px 0 auto;
+  box-shadow: 0 12px 35px #0002;
+  position: relative;
+}
+.editorial-price > span {
+  display: grid;
+  gap: 5px;
+}
+.editorial-price strong {
+  font-size: 21px;
+  letter-spacing: -0.04em;
+}
+.editorial-price strong small {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+.editorial-price > span > span {
+  font-size: 9px;
+  color: #65726c;
+}
+.editorial-thumbnails {
+  display: flex;
+  gap: 8px;
+  position: absolute;
+  bottom: 23px;
+  left: -155px;
+  z-index: 2;
+}
+.editorial-thumbnails button {
+  background: #faf7f1;
+  border: 2px solid #fff;
+  border-radius: 13px;
+  padding: 4px;
+  width: 108px;
+  overflow: hidden;
+  color: #103e38;
+  box-shadow: 0 9px 25px #0001;
+  transition: transform 0.2s;
+}
+.editorial-thumbnails button[aria-pressed="true"] {
+  border-color: #c86a4a;
+  transform: translateY(-9px);
+}
+.editorial-thumb-photo {
+  display: block;
+  height: 78px;
+  border-radius: 8px;
+  background: linear-gradient(#bccac3, #e8d6ba);
+  overflow: hidden;
+}
+.editorial-thumb-photo img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+}
+.editorial-thumbnails button > span:last-child {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  font-size: 9px;
+  padding: 9px 0 5px;
+  white-space: nowrap;
+}
+.editorial-assurances {
+  position: absolute;
+  bottom: 28px;
+  right: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 9px;
+  color: #fff;
+}
+.editorial-assurances span {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  justify-content: center;
+  font-size: 8px;
+  border: 1px solid #ffffff50;
+  border-radius: 20px;
+  padding: 9px;
+}
+.editorial-hero + .home-search {
+  margin-top: 0;
+  position: relative;
+  padding-top: 10px;
+}
+@media (max-width: 1100px) and (min-width: 701px) {
+  .editorial-hero {
+    gap: 20px;
+    grid-template-columns: 0.85fr 1.15fr;
+  }
+  .editorial-thumbnails {
+    left: -105px;
+    bottom: 70px;
+  }
+  .editorial-thumbnails button {
+    width: 90px;
+  }
+  .editorial-assurances {
+    bottom: 15px;
+    left: 20px;
+    grid-template-columns: repeat(4, 1fr);
+  }
+  .editorial-vehicle {
+    left: -10px;
+    right: -10px;
+  }
+  .editorial-copy h1 {
+    font-size: 58px;
+  }
+}
+@media (max-width: 700px) {
+  .editorial-hero {
+    grid-template-columns: 1fr;
+    gap: 25px;
+    padding-top: 10px;
+    min-height: 0;
+    padding-bottom: 18px;
+  }
+  .editorial-copy {
+    padding: 20px 0 0;
+  }
+  .editorial-copy h1 {
+    font-size: 55px;
+    line-height: 1.02;
+  }
+  .editorial-eyebrow {
+    margin-bottom: 18px;
+  }
+  .editorial-copy > p {
+    font-size: 12px;
+  }
+  .editorial-line,
+  .editorial-why {
+    display: none;
+  }
+  .editorial-pagination {
+    margin-top: 18px;
+  }
+  .editorial-stage {
+    min-height: 500px;
+    margin-top: 0;
+  }
+  .editorial-vehicle {
+    inset: 110px -5px auto;
+  }
+  .editorial-vehicle img {
+    height: 220px;
+  }
+  .editorial-spec {
+    top: 50px;
+    right: 18px;
+    padding: 11px 15px;
+  }
+  .editorial-featured {
+    top: 18px;
+    left: 15px;
+  }
+  .editorial-price {
+    margin: -5px 20px 0 auto;
+    padding: 12px 15px;
+  }
+  .editorial-price strong {
+    font-size: 19px;
+  }
+  .editorial-thumbnails {
+    left: 12px;
+    right: 12px;
+    bottom: 50px;
+    justify-content: center;
+    gap: 7px;
+  }
+  .editorial-thumbnails button {
+    width: calc((100% - 14px) / 3);
+    max-width: 125px;
+  }
+  .editorial-thumb-photo {
+    height: 62px;
+  }
+  .editorial-assurances {
+    bottom: 12px;
+    left: 12px;
+    right: 12px;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 4px;
+  }
+  .editorial-assurances span {
+    font-size: 7px;
+    padding: 6px 3px;
+  }
+  .editorial-assurances svg {
+    display: none;
+  }
+  .editorial-hero + .home-search {
+    margin-top: 0;
+  }
+  .nav-editorial .travel-nav {
+    padding-bottom: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .editorial-vehicle {
+    animation: none;
+  }
+  .editorial-thumbnails button {
+    transition: none;
+  }
+}
+.editorial-pagination {
+  max-width: 280px;
+}
+.editorial-arrows {
+  padding-right: 0;
+}
+@media (max-width: 700px) {
+  .editorial-pagination {
+    max-width: none;
+  }
+}
+@media (max-width: 700px) {
+  .editorial-stage {
+    min-height: 560px;
+  }
+}
+/* A clear airport handover card, replacing the oversized RAK illustration. */
+.airport-banner {
+  background: #eee7dc;
+  border: 1px solid #103e3812;
+  border-radius: 24px;
+  gap: 48px;
+  padding: 38px;
+  align-items: center;
+}
+.airport-handover-card {
+  background: #103e38;
+  color: #faf7f1;
+  border-radius: 18px;
+  padding: 25px 27px;
+  min-width: 0;
+  box-shadow: 0 16px 35px #103e3812;
+}
+.handover-card-top {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid #ffffff25;
+}
+.handover-card-top > span {
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  flex: 1;
+  color: #e8d6ba;
+}
+.handover-destination {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  padding: 25px 0;
+}
+.handover-destination > span {
+  font-size: 43px;
+  font-weight: 600;
+  letter-spacing: -0.04em;
+  color: #e8d6ba;
+  line-height: 1;
+}
+.handover-destination > div {
+  display: grid;
+  gap: 7px;
+}
+.handover-destination strong {
+  font-size: 15px;
+  font-weight: 500;
+}
+.handover-destination small {
+  font-size: 9px;
+  color: #c5d8cc;
+}
+.handover-route {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 0;
+  border-top: 1px dashed #ffffff35;
+  border-bottom: 1px dashed #ffffff35;
+}
+.handover-route span {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 10px;
+  white-space: nowrap;
+}
+.handover-route i {
+  flex: 1;
+  height: 1px;
+  background: #c86a4a;
+  min-width: 12px;
+}
+.airport-handover-card > p {
+  color: #c5d8cc;
+  font-size: 10px;
+  line-height: 1.7;
+  margin: 17px 0 0;
+}
+.airport-banner > div:last-child > p {
+  max-width: 470px;
+  margin: 18px 0 23px;
+  line-height: 1.8;
+}
+.airport-banner .button {
+  border-radius: 30px;
+}
+@media (max-width: 700px) {
+  .airport-banner {
+    padding: 20px;
+    gap: 25px;
+    border-radius: 20px;
+  }
+  .airport-handover-card {
+    padding: 20px;
+  }
+  .handover-destination {
+    gap: 14px;
+  }
+  .handover-destination > span {
+    font-size: 36px;
+  }
+  .handover-destination strong {
+    font-size: 13px;
+  }
+  .handover-route {
+    gap: 7px;
+  }
+  .handover-route span {
+    font-size: 8px;
+  }
+  .handover-route svg {
+    width: 15px;
+  }
+  .airport-banner > div:last-child > p {
+    margin: 14px 0 20px;
+  }
+}

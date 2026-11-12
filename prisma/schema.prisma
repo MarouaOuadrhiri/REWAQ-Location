@@ -1,0 +1,229 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ReservationStatus {
+  PENDING
+  CONFIRMED
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  REJECTED
+  EXPIRED
+}
+
+enum BlockKind {
+  MAINTENANCE
+  MANUAL
+}
+
+model Admin {
+  id           String               @id @default(cuid())
+  email        String               @unique
+  passwordHash String
+  name         String
+  sessions     AdminSession[]
+  history      ReservationHistory[]
+  createdAt    DateTime             @default(now())
+  updatedAt    DateTime             @updatedAt
+}
+
+model AdminSession {
+  id        String   @id @default(cuid())
+  tokenHash String   @unique
+  adminId   String
+  admin     Admin    @relation(fields: [adminId], references: [id], onDelete: Restrict)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([expiresAt])
+}
+
+model User {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  customer  Customer?
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+}
+
+model Vehicle {
+  id              String               @id @default(cuid())
+  slug            String               @unique
+  brand           String
+  model           String
+  year            Int
+  registration    String               @unique
+  category        String
+  description     String               @db.Text
+  transmission    String
+  fuel            String
+  seats           Int
+  dailyPrice      Decimal              @db.Decimal(12, 2)
+  weeklyPrice     Decimal              @db.Decimal(12, 2)
+  monthlyPrice    Decimal              @db.Decimal(12, 2)
+  weeklyDiscount  Decimal?             @db.Decimal(5, 2)
+  monthlyDiscount Decimal?             @db.Decimal(5, 2)
+  archived        Boolean              @default(false)
+  featured        Boolean              @default(false)
+  images          VehicleImage[]
+  reservations    Reservation[]
+  maintenance     VehicleMaintenance[]
+  createdAt       DateTime             @default(now())
+  updatedAt       DateTime             @updatedAt
+
+  @@index([archived, brand, category])
+}
+
+model VehicleImage {
+  id        String   @id @default(cuid())
+  vehicleId String
+  vehicle   Vehicle  @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  url       String
+  alt       String
+  position  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([vehicleId, position])
+}
+
+model Customer {
+  id             String        @id @default(cuid())
+  userId         String?       @unique
+  user           User?         @relation(fields: [userId], references: [id], onDelete: Restrict)
+  fullName       String
+  phone          String
+  email          String
+  identityNumber String
+  drivingLicense String
+  reservations   Reservation[]
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+
+  @@index([email])
+}
+
+model Reservation {
+  id                      String               @id @default(cuid())
+  reference               String               @unique
+  accessTokenHash         String               @unique
+  vehicleId               String
+  vehicle                 Vehicle              @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  customerId              String
+  customer                Customer             @relation(fields: [customerId], references: [id], onDelete: Restrict)
+  pickupAt                DateTime
+  returnAt                DateTime
+  pickupLocation          String
+  returnLocation          String
+  days                    Int
+  total                   Decimal              @db.Decimal(12, 2)
+  currency                String               @default("MAD")
+  pricingSnapshot         Json
+  originalPricingSnapshot Json
+  originalCustomer        Json
+  notes                   String?              @db.Text
+  internalNotes           String?              @db.Text
+  status                  ReservationStatus    @default(PENDING)
+  expiresAt               DateTime?
+  flightNumber            String?
+  arrivalTime             String?
+  meetingPoint            String?
+  requests                BookingRequest[]
+  inspections             RentalInspection[]
+  history                 ReservationHistory[]
+  payments                Payment[]
+  createdAt               DateTime             @default(now())
+  updatedAt               DateTime             @updatedAt
+
+  @@index([vehicleId, status, pickupAt, returnAt])
+  @@index([status, expiresAt])
+  @@index([customerId])
+}
+
+model PricingSettings {
+  id                 Int      @id @default(1)
+  weeklyDiscount     Decimal  @default(5) @db.Decimal(5, 2)
+  monthlyDiscount    Decimal  @default(1) @db.Decimal(5, 2)
+  pendingExpiryHours Int      @default(24)
+  pendingBlocks      Boolean  @default(true)
+  airportHandoverFee Decimal? @db.Decimal(12, 2)
+  securityDeposit Decimal? @db.Decimal(12, 2)
+  rentalTerms String? @db.Text
+  updatedAt          DateTime @updatedAt
+}
+
+model VehicleMaintenance {
+  id          String    @id @default(cuid())
+  vehicleId   String
+  vehicle     Vehicle   @relation(fields: [vehicleId], references: [id], onDelete: Restrict)
+  startAt     DateTime
+  endAt       DateTime
+  kind        BlockKind @default(MAINTENANCE)
+  reason      String
+  cancelledAt DateTime?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([vehicleId, startAt, endAt])
+}
+
+model ReservationHistory {
+  id            String      @id @default(cuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+  adminId       String?
+  admin         Admin?      @relation(fields: [adminId], references: [id], onDelete: Restrict)
+  action        String
+  before        Json?
+  after         Json
+  createdAt     DateTime    @default(now())
+
+  @@index([reservationId, createdAt])
+}
+
+model Payment {
+  id            String      @id @default(cuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+  amount        Decimal     @db.Decimal(12, 2)
+  currency      String      @default("MAD")
+  method        String
+  kind          String @default("RENTAL")
+  memo          String?
+  receivedAt    DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+
+  @@index([reservationId])
+}
+
+model BookingRequest {
+ id String @id @default(cuid())
+ reservationId String
+ reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+ kind String
+ message String @db.Text
+ status String @default("OPEN")
+ response String? @db.Text
+ createdAt DateTime @default(now())
+ resolvedAt DateTime?
+ @@index([reservationId, status])
+}
+model RentalInspection {
+ id String @id @default(cuid())
+ reservationId String
+ reservation Reservation @relation(fields: [reservationId], references: [id], onDelete: Restrict)
+ kind String
+ odometer Int
+ fuelPercent Int
+ conditionNotes String @db.Text
+ checklist Json
+ photos Json
+ adminName String
+ createdAt DateTime @default(now())
+ @@unique([reservationId, kind])
+}
