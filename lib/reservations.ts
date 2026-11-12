@@ -66,7 +66,14 @@ export async function createBooking(raw: unknown) {
       if (vehicle.archived) throw new Error("This vehicle is archived.");
       await available(tx, vehicle.id, pickupAt, returnAt);
       const config = await settings(tx);
-      const pricing = rentalQuote(vehicle, config, pickupAt, returnAt, input.pickupLocation, input.returnLocation);
+      const pricing = rentalQuote(
+        vehicle,
+        config,
+        pickupAt,
+        returnAt,
+        input.pickupLocation,
+        input.returnLocation,
+      );
       const customer = await tx.customer.create({ data: input.customer });
       const result = await tx.reservation.create({
         data: {

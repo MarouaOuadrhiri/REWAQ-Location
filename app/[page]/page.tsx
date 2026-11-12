@@ -1,3 +1,5 @@
+import { AboutPage } from "@/components/AboutPage";
+import { ServicesPage } from "@/components/ServicesPage";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import {
@@ -77,6 +79,8 @@ export default async function Info({
 }) {
   const page = (await params).page;
   if (!(page in content)) notFound();
+  if (page === "services") return <ServicesPage />;
+  if (page === "about") return <AboutPage />;
   const data = content[page as keyof typeof content];
   const icons =
     page === "services"

@@ -179,7 +179,9 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
                 new FormData(form),
               );
               form.reset();
-              setSuccess("Image uploaded.");
+              setSuccess(
+                "Photos uploaded. The primary photo appears on vehicle cards.",
+              );
               router.refresh();
             } catch (e) {
               setError((e as Error).message);
@@ -188,18 +190,49 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
             }
           }}
         >
-          <h3>Vehicle gallery</h3>
+          <h3>Vehicle photos</h3>
+          <p className="muted">
+            The primary photo appears on cards. All photos are available in
+            vehicle details. Choose any photo below as the primary image.
+          </p>
           <div className="gallery">
-            {vehicle.images?.map((v: any) => (
-              <img src={v.url} alt={v.alt} key={v.id} />
+            {vehicle.images?.map((v: any, i: number) => (
+              <div className="admin-photo-tile" key={v.id}>
+                <img src={v.url} alt={v.alt} />
+                <button
+                  type="button"
+                  className={i === 0 ? "badge confirmed" : "button light small"}
+                  disabled={busy || i === 0}
+                  onClick={async () => {
+                    setBusy(true);
+                    setError("");
+                    try {
+                      await api(
+                        "/api/admin/vehicles/" + vehicle.id + "/images",
+                        "PATCH",
+                        { imageId: v.id },
+                      );
+                      setSuccess("Primary photo updated.");
+                      router.refresh();
+                    } catch (e) {
+                      setError((e as Error).message);
+                    } finally {
+                      setBusy(false);
+                    }
+                  }}
+                >
+                  {i === 0 ? "Primary · shown on cards" : "Set as primary"}
+                </button>
+              </div>
             ))}
           </div>
           <div className="form-grid">
             <label>
-              Photo (PNG / WebP / JPEG, up to 8 MB)
+              Photos (up to 12 at a time, 8 MB each, 32 MB total)
               <input
                 type="file"
-                name="file"
+                name="files"
+                multiple
                 required
                 accept="image/png,image/webp,image/jpeg"
               />
@@ -209,12 +242,17 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
               <input name="alt" required />
             </label>
           </div>
+          <label className="photo-primary-checkbox">
+            <input type="checkbox" name="makePrimary" />
+            Use the first selected photo as the primary image
+          </label>
+          <Notice error={error} success={success} />
           <button
             className="button light"
             disabled={busy}
             style={{ marginTop: 15 }}
           >
-            Upload image
+            {busy ? "Uploading…" : "Upload photos"}
           </button>
         </form>
       )}
@@ -237,8 +275,14 @@ export function SettingsForm({ settings }: { settings: any }) {
           await api("/api/admin/settings", "PATCH", {
             ...Object.fromEntries(f),
             pendingBlocks: f.has("pendingBlocks"),
-            airportHandoverFee: f.get("airportHandoverFee") === "" ? null : Number(f.get("airportHandoverFee")),
-            securityDeposit: f.get("securityDeposit") === "" ? null : Number(f.get("securityDeposit")),
+            airportHandoverFee:
+              f.get("airportHandoverFee") === ""
+                ? null
+                : Number(f.get("airportHandoverFee")),
+            securityDeposit:
+              f.get("securityDeposit") === ""
+                ? null
+                : Number(f.get("securityDeposit")),
           });
           setSuccess(
             "Settings saved. Existing booking snapshots are preserved.",
@@ -294,9 +338,34 @@ export function SettingsForm({ settings }: { settings: any }) {
           />
           Pending requests block availability
         </label>
-        <label>Airport fee per handover (DH, blank = to arrange)<input type="number" step=".01" min="0" name="airportHandoverFee" defaultValue={settings.airportHandoverFee ?? ""}/></label>
-        <label>Refundable security deposit (DH, blank = to arrange)<input type="number" step=".01" min="0" name="securityDeposit" defaultValue={settings.securityDeposit ?? ""}/></label>
-        <label className="full">Rental terms: insurance, fuel, driver requirements and cancellation<textarea name="rentalTerms" maxLength={10000} defaultValue={settings.rentalTerms ?? ""}/></label>
+        <label>
+          Airport fee per handover (DH, blank = to arrange)
+          <input
+            type="number"
+            step=".01"
+            min="0"
+            name="airportHandoverFee"
+            defaultValue={settings.airportHandoverFee ?? ""}
+          />
+        </label>
+        <label>
+          Refundable security deposit (DH, blank = to arrange)
+          <input
+            type="number"
+            step=".01"
+            min="0"
+            name="securityDeposit"
+            defaultValue={settings.securityDeposit ?? ""}
+          />
+        </label>
+        <label className="full">
+          Rental terms: insurance, fuel, driver requirements and cancellation
+          <textarea
+            name="rentalTerms"
+            maxLength={10000}
+            defaultValue={settings.rentalTerms ?? ""}
+          />
+        </label>
       </div>
       <p className="muted">
         Currency: MAD / DH. A month is 30 days; a week is 7 days.
@@ -420,9 +489,33 @@ export function ReservationForm({
               defaultValue={reservation.returnLocation}
             />
           </label>
-          <label>Flight number<input name="flightNumber" maxLength={20} disabled={!editable} defaultValue={reservation.flightNumber ?? ""}/></label>
-          <label>Arrival time (Marrakech)<input name="arrivalTime" type="time" disabled={!editable} defaultValue={reservation.arrivalTime ?? ""}/></label>
-          <label className="full">Meeting point shared with customer<input name="meetingPoint" maxLength={200} disabled={!editable} defaultValue={reservation.meetingPoint ?? ""}/></label>
+          <label>
+            Flight number
+            <input
+              name="flightNumber"
+              maxLength={20}
+              disabled={!editable}
+              defaultValue={reservation.flightNumber ?? ""}
+            />
+          </label>
+          <label>
+            Arrival time (Marrakech)
+            <input
+              name="arrivalTime"
+              type="time"
+              disabled={!editable}
+              defaultValue={reservation.arrivalTime ?? ""}
+            />
+          </label>
+          <label className="full">
+            Meeting point shared with customer
+            <input
+              name="meetingPoint"
+              maxLength={200}
+              disabled={!editable}
+              defaultValue={reservation.meetingPoint ?? ""}
+            />
+          </label>
           <label className="full">
             Internal notes
             <textarea
@@ -523,9 +616,22 @@ function PaymentForm({ reservationId }: { reservationId: string }) {
       }}
     >
       <h3>Record a payment or refund</h3>
-      <p className="muted">Ledger entry only. This does not charge a card or send money.</p>
-      <label>Type<select name="kind"><option value="RENTAL">Rental payment / advance</option><option value="RENTAL_REFUND">Rental refund</option><option value="DEPOSIT">Security deposit received</option><option value="DEPOSIT_REFUND">Security deposit returned</option></select></label>
-      <label>Reference / memo<input name="memo" maxLength={190}/></label>
+      <p className="muted">
+        Ledger entry only. This does not charge a card or send money.
+      </p>
+      <label>
+        Type
+        <select name="kind">
+          <option value="RENTAL">Rental payment / advance</option>
+          <option value="RENTAL_REFUND">Rental refund</option>
+          <option value="DEPOSIT">Security deposit received</option>
+          <option value="DEPOSIT_REFUND">Security deposit returned</option>
+        </select>
+      </label>
+      <label>
+        Reference / memo
+        <input name="memo" maxLength={190} />
+      </label>
       <div className="form-grid">
         <label>
           Amount (DH)

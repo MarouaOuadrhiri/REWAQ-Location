@@ -25,18 +25,13 @@ type Slide = {
   transmission: string;
   images: { url: string; alt: string }[];
 };
-const heroScenes = [
-  "/vehicles/atlas-landscape.jpg",
-  "/vehicles/hero-countryside.jpg",
-  "/vehicles/hero-lakeside.jpg",
-];
-function sceneFor(car: Slide, position: number) {
-  const scenes: Record<string, string> = {
-    "mercedes-c-class": heroScenes[0],
-    "bmw-m2": heroScenes[1],
-    "porsche-boxster": heroScenes[2],
+function photoFor(car: Slide) {
+  const photos: Record<string, string> = {
+    "mercedes-c-class": "/vehicles/hero-mercedes-scene.webp",
+    "bmw-m2": "/vehicles/hero-bmw-scene.webp",
+    "porsche-boxster": "/vehicles/hero-porsche-scene.webp",
   };
-  return scenes[car.slug] ?? heroScenes[position % heroScenes.length];
+  return photos[car.slug] ?? car.images[0]?.url;
 }
 export function HeroCarousel({ cars }: { cars: Slide[] }) {
   const [index, setIndex] = useState(0),
@@ -146,13 +141,6 @@ export function HeroCarousel({ cars }: { cars: Slide[] }) {
         </div>
       </div>
       <div className="editorial-stage">
-        <div
-          key={car.id}
-          className="editorial-landscape"
-          style={{
-            backgroundImage: `linear-gradient(180deg, #103e3810 0%, #103e3800 25%, #103e3855 55%, #153b32eb 100%), url("${sceneFor(car, index)}")`,
-          }}
-        />
         <span className="editorial-featured">
           FEATURED CAR <span>↗</span>
         </span>
@@ -167,12 +155,17 @@ export function HeroCarousel({ cars }: { cars: Slide[] }) {
           aria-roledescription="slide"
           aria-label={`${index + 1} of ${cars.length}: ${car.brand} ${car.model}`}
         >
-          {car.images[0] && (
+          {photoFor(car) && (
             <Link
+              className="editorial-photo-link"
               href={`/cars/${car.slug}`}
               aria-label={`View ${car.brand} ${car.model}`}
             >
-              <img src={car.images[0].url} alt={`${car.brand} ${car.model}`} />
+              <img
+                className="editorial-full-photo"
+                src={photoFor(car)}
+                alt={`${car.brand} ${car.model} in its own scenic setting`}
+              />
             </Link>
           )}
           <Link className="editorial-price" href={`/cars/${car.slug}`}>
@@ -201,15 +194,8 @@ export function HeroCarousel({ cars }: { cars: Slide[] }) {
                 setIndex(i);
               }}
             >
-              <span
-                className="editorial-thumb-photo"
-                style={{
-                  backgroundImage: `linear-gradient(180deg, transparent, #103e3833), url("${sceneFor(v, i)}")`,
-                  backgroundSize: "cover",
-                  backgroundPosition: "center",
-                }}
-              >
-                {v.images[0] && <img src={v.images[0].url} alt="" />}
+              <span className="editorial-thumb-photo">
+                {photoFor(v) && <img src={photoFor(v)} alt="" />}
               </span>
               <span>
                 <CarFront size={13} />

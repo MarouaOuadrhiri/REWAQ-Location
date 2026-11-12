@@ -44,3 +44,15 @@ test("currency calculations remain at integer cents", () => {
   );
   assert.equal(q.total, 124.67);
 });
+import { rentalQuote } from '../lib/pricing';
+test('airport fees count each handover and exclude refundable deposit',()=>{
+ const q=rentalQuote(rates,{...config,airportHandoverFee:75,securityDeposit:3000},'2027-01-01','2027-01-08','Marrakech Menara Airport (RAK)','Marrakech Menara Airport (RAK)');
+ assert.equal(q.rentalTotal,2850);assert.equal(q.handoverFee,150);assert.equal(q.total,3000);assert.equal(q.securityDeposit,3000);
+});
+test('unconfigured airport fee stays explicitly unknown, not free',()=>{
+ const q=rentalQuote(rates,config,'2027-01-01','2027-01-02','Marrakech Menara Airport (RAK)','Marrakech city');
+ assert.equal(q.airportFeeKnown,false);assert.equal(q.total,500);assert.equal(q.securityDeposit,null);
+});
+test('explicit zero handover fee is configured and zero',()=>{
+ const q=rentalQuote(rates,{...config,airportHandoverFee:0},'2027-01-01','2027-01-02','Marrakech Menara Airport (RAK)','Marrakech city');assert.equal(q.airportFeeKnown,true);assert.equal(q.handoverFee,0);
+});

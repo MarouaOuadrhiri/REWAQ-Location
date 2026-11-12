@@ -74,10 +74,38 @@ export const money = (n: unknown) =>
     Number(n),
   ) + " DH";
 
-export function rentalQuote(rates: Rates, config: {weeklyDiscount:unknown;monthlyDiscount:unknown;airportHandoverFee?:unknown;securityDeposit?:unknown;rentalTerms?:string|null}, start:string|Date, end:string|Date, pickupLocation='', returnLocation='') {
- const base=calculate(rates,config,start,end);
- const airportHandovers=[pickupLocation,returnLocation].filter(v=>v.includes('(RAK)')).length;
- const airportFeeKnown=config.airportHandoverFee!=null;
- const handoverFee=airportFeeKnown ? Math.round(Number(config.airportHandoverFee)*100)*airportHandovers/100 : 0;
- return {...base,rentalTotal:base.total,airportHandovers,handoverFee,airportFeeKnown,securityDeposit:config.securityDeposit==null?null:Number(config.securityDeposit),rentalTerms:config.rentalTerms||null,total:Math.round((base.total+handoverFee)*100)/100};
+export function rentalQuote(
+  rates: Rates,
+  config: {
+    weeklyDiscount: unknown;
+    monthlyDiscount: unknown;
+    airportHandoverFee?: unknown;
+    securityDeposit?: unknown;
+    rentalTerms?: string | null;
+  },
+  start: string | Date,
+  end: string | Date,
+  pickupLocation = "",
+  returnLocation = "",
+) {
+  const base = calculate(rates, config, start, end);
+  const airportHandovers = [pickupLocation, returnLocation].filter((v) =>
+    v.includes("(RAK)"),
+  ).length;
+  const airportFeeKnown = config.airportHandoverFee != null;
+  const handoverFee = airportFeeKnown
+    ? (Math.round(Number(config.airportHandoverFee) * 100) * airportHandovers) /
+      100
+    : 0;
+  return {
+    ...base,
+    rentalTotal: base.total,
+    airportHandovers,
+    handoverFee,
+    airportFeeKnown,
+    securityDeposit:
+      config.securityDeposit == null ? null : Number(config.securityDeposit),
+    rentalTerms: config.rentalTerms || null,
+    total: Math.round((base.total + handoverFee) * 100) / 100,
+  };
 }

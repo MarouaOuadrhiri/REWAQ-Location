@@ -20,7 +20,7 @@ export type Car = {
 };
 export function CarCard({ car, admin = false }: { car: Car; admin?: boolean }) {
   return (
-    <article className="car-card">
+    <article className="car-card car-card-clean">
       <Link
         href={admin ? `/admin/cars/${car.id}` : `/cars/${car.slug}`}
         className="car-media"
@@ -41,7 +41,6 @@ export function CarCard({ car, admin = false }: { car: Car; admin?: boolean }) {
         </small>
         <div className="car-title">
           <h3>{car.model}</h3>
-          <ArrowUpRight size={18} />
         </div>
         <div className="specs">
           <span>
@@ -62,36 +61,14 @@ export function CarCard({ car, admin = false }: { car: Car; admin?: boolean }) {
             {money(car.dailyPrice)} <small>/ day</small>
           </div>
           <Link
-            className="text-link"
-            href={admin ? `/admin/cars/${car.id}` : `/cars/${car.slug}`}
+            className="card-book"
+            aria-label={`${admin ? "Manage" : "Book"} ${car.brand} ${car.model}`}
+            href={admin ? `/admin/cars/${car.id}` : `/cars/${car.slug}#reserve`}
           >
-            {admin ? "Manage" : "Discover"} ↗
+            {admin ? "Manage" : "Book"}
+            <ArrowUpRight size={15} />
           </Link>
         </div>
-        <p style={{ fontSize: 10, color: "#63766D", margin: "14px 0 0" }}>
-          {money(car.weeklyPrice)} / week · {money(car.monthlyPrice)} / month
-        </p>
-        {!admin && (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              marginTop: 18,
-              gap: 10,
-            }}
-          >
-            <small style={{ fontSize: 10 }}>
-              Select dates to check availability
-            </small>
-            <Link
-              className="button light small"
-              href={`/cars/${car.slug}#reserve`}
-            >
-              Book now ↗
-            </Link>
-          </div>
-        )}
       </div>
     </article>
   );

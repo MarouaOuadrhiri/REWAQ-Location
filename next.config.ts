@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 const config: NextConfig = {
   distDir: process.env.NODE_ENV === "development" ? ".next-dev" : ".next",
+  typescript: {tsconfigPath:process.env.NODE_ENV === "development" ? "tsconfig.json" : "tsconfig.build.json"},
   serverExternalPackages: ["bcryptjs"],
   poweredByHeader: false,
   async headers() {

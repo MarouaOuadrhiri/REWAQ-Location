@@ -1,3 +1,4 @@
+import { FloatingNavigation } from "./FloatingNavigation";
 import Link from "next/link";
 import { CarFront, Plane, MapPin, HelpCircle, ArrowRight } from "lucide-react";
 export function Brand() {
@@ -10,46 +11,13 @@ export function Brand() {
     </Link>
   );
 }
-export function Header({ light = true }: { light?: boolean }) {
+export function Header(_props: { light?: boolean } = {}) {
   return (
     <>
       <a className="skip-link" href="#main-content">
         Skip to content
       </a>
-      <div className={`nav-dark${light ? " nav-editorial" : ""}`}>
-        <div className="container">
-          <header className="nav">
-            <Brand />
-            <div className="header-utilities">
-              <span className="currency-label">MAD · DH</span>
-              <Link href="/contact" aria-label="Get help">
-                <HelpCircle size={20} />
-              </Link>
-              <Link className="header-login" href="/admin/login">
-                Admin sign in
-              </Link>
-            </div>
-          </header>
-          <nav className="travel-nav" aria-label="Main navigation">
-            <Link href="/cars">
-              <CarFront size={18} />
-              Car rentals
-            </Link>
-            <Link href="/services">
-              <Plane size={18} />
-              Airport delivery
-            </Link>
-            <Link href="/about">
-              <MapPin size={18} />
-              About REWAQ Location
-            </Link>
-            <Link href="/contact">
-              <HelpCircle size={18} />
-              Help & contact
-            </Link>
-          </nav>
-        </div>
-      </div>
+      <FloatingNavigation brand={<Brand />} />
     </>
   );
 }

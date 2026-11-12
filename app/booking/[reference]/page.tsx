@@ -12,6 +12,10 @@ import {
   KeyRound,
 } from "lucide-react";
 import Link from "next/link";
+export const metadata = {
+  robots: { index: false, follow: false },
+  referrer: "no-referrer" as const,
+};
 export const dynamic = "force-dynamic";
 export default async function Confirmation({
   params,
@@ -25,9 +29,14 @@ export default async function Confirmation({
   if (!token) notFound();
   const item = await db.reservation.findFirst({
     where: { reference, accessTokenHash: hash(token) },
-    include: { vehicle: true, requests:{orderBy:{createdAt:"desc"}}, payments:true },
+    include: {
+      vehicle: true,
+      requests: { orderBy: { createdAt: "desc" } },
+      payments: true,
+    },
   });
   if (!item) notFound();
+  const snapshot = item.pricingSnapshot as Record<string, any>;
   const status =
     item.status === "PENDING" && item.expiresAt && item.expiresAt < new Date()
       ? "EXPIRED"
@@ -66,9 +75,34 @@ export default async function Confirmation({
               <Plane size={16} />
               {item.pickupLocation} → {item.returnLocation}
             </p>
-            {item.meetingPoint&&<p className="success">Meeting point: {item.meetingPoint}</p>}
-            {item.flightNumber&&<p>Flight: {item.flightNumber} · Arrival: {item.arrivalTime||"To arrange"} (Marrakech)</p>}
+            {item.meetingPoint && (
+              <p className="success">Meeting point: {item.meetingPoint}</p>
+            )}
+            {item.flightNumber && (
+              <p>
+                Flight: {item.flightNumber} · Arrival:{" "}
+                {item.arrivalTime || "To arrange"} (Marrakech)
+              </p>
+            )}
             <div className="breakdown">
+              {snapshot.handoverFee != null && (
+                <p>
+                  <span>Airport handover fees</span>
+                  <strong>
+                    {snapshot.airportHandovers && !snapshot.airportFeeKnown
+                      ? "To arrange"
+                      : money(snapshot.handoverFee)}
+                  </strong>
+                </p>
+              )}
+              <p>
+                <span>Refundable deposit (separate)</span>
+                <strong>
+                  {snapshot.securityDeposit == null
+                    ? "To arrange"
+                    : money(snapshot.securityDeposit)}
+                </strong>
+              </p>
               <p className="total">
                 <span>Total rental price</span>
                 <strong>{money(item.total)}</strong>
@@ -85,7 +119,8 @@ export default async function Confirmation({
               </p>
             )}
             <small>
-              Keep this private link to check your reservation status and contact our team.
+              Keep this private link to check your reservation status and
+              contact our team.
             </small>
           </div>
           <aside className="panel">
@@ -131,7 +166,12 @@ export default async function Confirmation({
             </Link>
           </aside>
         </div>
-        <CustomerRequest reference={reference} token={token} enabled={["PENDING","CONFIRMED"].includes(status)} requests={JSON.parse(JSON.stringify(item.requests))}/>
+        <CustomerRequest
+          reference={reference}
+          token={token}
+          enabled={["PENDING", "CONFIRMED"].includes(status)}
+          requests={JSON.parse(JSON.stringify(item.requests))}
+        />
       </main>
       <Footer />
     </>

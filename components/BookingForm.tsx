@@ -145,7 +145,22 @@ export function BookingForm({
       </div>
       <div data-step="1" hidden={step !== 1}>
         <h4>When do you need the car?</h4>
-        <AvailabilityCalendar vehicleId={vehicleId} onSelect={(start,end)=>{const pickup=form.current?.elements.namedItem("pickupAt") as HTMLInputElement;const back=form.current?.elements.namedItem("returnAt") as HTMLInputElement;if(pickup&&back){pickup.value=start;back.value=end;void getQuote(form.current!);}}}/>
+        <AvailabilityCalendar
+          vehicleId={vehicleId}
+          onSelect={(start, end) => {
+            const pickup = form.current?.elements.namedItem(
+              "pickupAt",
+            ) as HTMLInputElement;
+            const back = form.current?.elements.namedItem(
+              "returnAt",
+            ) as HTMLInputElement;
+            if (pickup && back) {
+              pickup.value = start;
+              back.value = end;
+              void getQuote(form.current!);
+            }
+          }}
+        />
         <div className="form-grid">
           <label>
             Pickup date
@@ -172,7 +187,7 @@ export function BookingForm({
             Pickup location
             <select
               name="pickupLocation"
-              onChange={e=>getQuote(e.currentTarget.form!)}
+              onChange={(e) => getQuote(e.currentTarget.form!)}
               defaultValue={
                 locations.includes(
                   initial.location as (typeof locations)[number],
@@ -188,7 +203,11 @@ export function BookingForm({
           </label>
           <label className="full">
             Return location
-            <select onChange={e=>getQuote(e.currentTarget.form!)} name="returnLocation" defaultValue={defaultLocation}>
+            <select
+              onChange={(e) => getQuote(e.currentTarget.form!)}
+              name="returnLocation"
+              defaultValue={defaultLocation}
+            >
               {locations.map((v) => (
                 <option key={v}>{v}</option>
               ))}
@@ -345,11 +364,38 @@ export function BookingForm({
             <span>Period discounts</span>
             <span>−{money(quote.discount)}</span>
           </p>
-          <p><span>Airport handovers ({quote.airportHandovers})</span><span>{quote.airportHandovers===0?"Not selected":quote.airportFeeKnown?money(quote.handoverFee):"To arrange before confirmation"}</span></p>
-          <p><span>Refundable deposit (separate)</span><span>{quote.securityDeposit==null?"To arrange":money(quote.securityDeposit)}</span></p>
-          {quote.rentalTerms&&<details><summary>Rental terms</summary><p style={{whiteSpace:"pre-wrap",display:"block"}}>{quote.rentalTerms}</p></details>}
+          <p>
+            <span>Airport handovers ({quote.airportHandovers})</span>
+            <span>
+              {quote.airportHandovers === 0
+                ? "Not selected"
+                : quote.airportFeeKnown
+                  ? money(quote.handoverFee)
+                  : "To arrange before confirmation"}
+            </span>
+          </p>
+          <p>
+            <span>Refundable deposit (separate)</span>
+            <span>
+              {quote.securityDeposit == null
+                ? "To arrange"
+                : money(quote.securityDeposit)}
+            </span>
+          </p>
+          {quote.rentalTerms && (
+            <details>
+              <summary>Rental terms</summary>
+              <p style={{ whiteSpace: "pre-wrap", display: "block" }}>
+                {quote.rentalTerms}
+              </p>
+            </details>
+          )}
           <p className="total">
-            <span>{quote.airportHandovers&&!quote.airportFeeKnown?"Rental total · delivery to arrange":"Total including configured handover fees"}</span>
+            <span>
+              {quote.airportHandovers && !quote.airportFeeKnown
+                ? "Rental total · delivery to arrange"
+                : "Total including configured handover fees"}
+            </span>
             <strong>{money(quote.total)}</strong>
           </p>
           <small>Vehicle rental total · MAD / DH</small>
@@ -361,7 +407,9 @@ export function BookingForm({
         </div>
       )}
       <div className="booking-actions">
-        <span className="mobile-booking-total">{quote?money(quote.total):"Choose your dates"}</span>
+        <span className="mobile-booking-total">
+          {quote ? money(quote.total) : "Choose your dates"}
+        </span>
         {step > 1 && (
           <button
             type="button"

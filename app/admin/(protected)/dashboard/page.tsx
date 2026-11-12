@@ -10,7 +10,9 @@ export default async function Dashboard() {
       include: { vehicle: true, customer: true },
       orderBy: { createdAt: "desc" },
     }),
-    db.payment.findMany({where:{kind:{in:["RENTAL","RENTAL_REFUND"]}}}),
+    db.payment.findMany({
+      where: { kind: { in: ["RENTAL", "RENTAL_REFUND"] } },
+    }),
     db.vehicleMaintenance.findMany({ where: { cancelledAt: null } }),
   ]);
   const now = new Date();
@@ -67,7 +69,13 @@ export default async function Dashboard() {
     ],
     [
       "Revenue received",
-      money(payments.reduce((s, p) => s + (p.kind === "RENTAL_REFUND" ? -1 : 1) * Number(p.amount), 0)),
+      money(
+        payments.reduce(
+          (s, p) =>
+            s + (p.kind === "RENTAL_REFUND" ? -1 : 1) * Number(p.amount),
+          0,
+        ),
+      ),
     ],
   ];
   const months = Array.from({ length: 6 }, (_, i) => {

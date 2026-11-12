@@ -1,12 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { compare } from "bcryptjs";
 import { cookies } from "next/headers";
-import { writeFile, mkdir } from "node:fs/promises";
-import path from "node:path";
-import { randomUUID } from "node:crypto";
 import { Prisma } from "@prisma/client";
 import { ZodError, z } from "zod";
 import { db } from "@/lib/db";
+import {
+  uploadVehicleImages,
+  setPrimaryVehicleImage,
+} from "@/lib/vehicle-images";
 import { publicOperations, adminOperations } from "@/lib/operations";
 import { admin, requireAdmin, sameOrigin, hash, token } from "@/lib/auth";
 import {
@@ -107,7 +108,14 @@ async function handler(
       });
       await available(db, vehicle.id, period.pickupAt, period.returnAt);
       return NextResponse.json(
-        rentalQuote(vehicle, await settings(), period.pickupAt, period.returnAt, input.pickupLocation, input.returnLocation),
+        rentalQuote(
+          vehicle,
+          await settings(),
+          period.pickupAt,
+          period.returnAt,
+          input.pickupLocation,
+          input.returnLocation,
+        ),
       );
     }
     if (route === "vehicles" && method === "GET")
@@ -141,7 +149,7 @@ async function handler(
           }),
           { status: 201 },
         );
-      if (id && method === "PATCH")
+      if (id && !action && method === "PATCH")
         return NextResponse.json(
           await db.$transaction(async (tx) => {
             await lockVehicles(tx, [id]);
@@ -151,49 +159,10 @@ async function handler(
             });
           }),
         );
-      if (id && action === "images" && method === "POST") {
-        const form = await req.formData();
-        const file = form.get("file");
-        if (!(file instanceof File) || file.size > 8 * 1024 * 1024)
-          throw new Error("Select an image up to 8 MB.");
-        const buffer = Buffer.from(await file.arrayBuffer());
-        let ext = "";
-        if (
-          buffer
-            .subarray(0, 8)
-            .equals(Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]))
-        )
-          ext = "png";
-        else if (buffer[0] === 255 && buffer[1] === 216 && buffer[2] === 255)
-          ext = "jpg";
-        else if (
-          buffer.toString("ascii", 0, 4) === "RIFF" &&
-          buffer.toString("ascii", 8, 12) === "WEBP"
-        )
-          ext = "webp";
-        if (!ext) throw new Error("Only PNG, JPEG and WebP are supported.");
-        await db.vehicle.findUniqueOrThrow({ where: { id } });
-        await mkdir(path.join(process.cwd(), "public/uploads"), {
-          recursive: true,
-        });
-        const name = randomUUID() + "." + ext;
-        await writeFile(
-          path.join(process.cwd(), "public/uploads", name),
-          buffer,
-        );
-        return NextResponse.json(
-          await db.vehicleImage.create({
-            data: {
-              vehicleId: id,
-              url: "/uploads/" + name,
-              alt: form.get("alt")?.toString().slice(0, 200) || "Vehicle photo",
-              position: await db.vehicleImage.count({
-                where: { vehicleId: id },
-              }),
-            },
-          }),
-        );
-      }
+      if (id && action === "images" && method === "POST")
+        return uploadVehicleImages(req, id);
+      if (id && action === "images" && method === "PATCH")
+        return setPrimaryVehicleImage(req, id);
     }
     if (resource === "reservations") {
       if (method === "GET")

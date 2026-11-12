@@ -1,4 +1,6 @@
+import { VehicleGallery } from "@/components/VehicleGallery";
 import { notFound } from "next/navigation";
+import { settings } from "@/lib/reservations";
 import { db } from "@/lib/db";
 import { money } from "@/lib/pricing";
 import { Header, Footer } from "@/components/PublicShell";
@@ -29,9 +31,10 @@ export default async function Details({
     include: { images: { orderBy: { position: "asc" } } },
   });
   if (!car) notFound();
+  const policies = await settings();
   const similar = await db.vehicle.findMany({
     where: { archived: false, category: car.category, id: { not: car.id } },
-    include: { images: true },
+    include: { images: { orderBy: { position: "asc" } } },
     take: 3,
   });
   return (
@@ -66,18 +69,10 @@ export default async function Details({
         </nav>
         <div className="detail-grid">
           <div id="overview">
-            <div className="detail-image">
-              {car.images[0] && (
-                <img src={car.images[0].url} alt={car.images[0].alt} />
-              )}
-            </div>
-            <div className="gallery">
-              {car.images.map((v) => (
-                <a key={v.id} href={v.url} target="_blank" rel="noreferrer">
-                  <img src={v.url} alt={v.alt} />
-                </a>
-              ))}
-            </div>
+            <VehicleGallery
+              photos={car.images}
+              name={car.brand + " " + car.model}
+            />
             <p className="muted">{car.description}</p>
             <div id="specifications" className="specs detail-specs">
               <span>
@@ -117,6 +112,26 @@ export default async function Details({
                 Weekly and monthly discounts are applied in your quote.
               </small>
             </div>
+            <section className="panel rental-policies">
+              <h3>Before you book</h3>
+              <p>
+                Refundable security deposit:{" "}
+                {policies.securityDeposit == null
+                  ? "To arrange with our team before confirmation"
+                  : money(policies.securityDeposit)}
+              </p>
+              <p>
+                Airport delivery / collection:{" "}
+                {policies.airportHandoverFee == null
+                  ? "Fee and handover details to arrange before confirmation"
+                  : money(policies.airportHandoverFee) +
+                    " per airport handover"}
+              </p>
+              <p>
+                {policies.rentalTerms ||
+                  "Our team will confirm driver requirements, insurance cover, fuel policy and cancellation terms before confirming your reservation. Contact us if you need these details before sending a request."}
+              </p>
+            </section>
             <div className="panel airport-detail">
               <Plane size={28} />
               <div>

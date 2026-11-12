@@ -76,7 +76,97 @@ export default async function Calendar({
         <span className="badge active">Active</span>
         <span className="badge expired">Maintenance / Block</span>
       </div>
-      <section className="fleet-timeline-wrap"><h2>Fleet at a glance</h2><p className="muted">One row per vehicle. Colored cells link to the reservation; maintenance cells show the blocking reason. Dates shown are end-exclusive.</p><div className="table-wrap fleet-timeline"><table><thead><tr><th>Vehicle</th>{Array.from({length:days},(_,i)=><th key={i}>{i+1}</th>)}</tr></thead><tbody>{cars.filter(c=>!q.vehicleId||c.id===q.vehicleId).map(car=><tr key={car.id}><th>{car.brand} {car.model}<small>{car.registration}{car.archived?' · Archived':''}</small></th>{Array.from({length:days},(_,i)=>{const day=new Date(+safe+i*86400000),next=new Date(+day+86400000),booking=reservations.find(r=>r.vehicleId===car.id&&r.pickupAt<next&&r.returnAt>day),block=blocks.find(b=>b.vehicleId===car.id&&b.startAt<next&&b.endAt>day);return <td key={i}>{booking?<Link title={booking.reference+' · '+booking.status} aria-label={car.model+' day '+(i+1)+' '+booking.status} className={'timeline-cell '+booking.status.toLowerCase()} href={'/admin/reservations/'+booking.id}>{booking.status==='PENDING'?'P':booking.status==='ACTIVE'?'A':'C'}</Link>:block?<span className="timeline-cell block" title={block.reason}>M</span>:<span className="timeline-cell free" aria-label="No booking or block">·</span>}</td>})}</tr>)}</tbody></table></div></section>
+      <section className="fleet-timeline-wrap">
+        <h2>Fleet at a glance</h2>
+        <p className="muted">
+          One row per vehicle. Colored cells link to the reservation;
+          maintenance cells show the blocking reason. Dates shown are
+          end-exclusive.
+        </p>
+        <div className="table-wrap fleet-timeline">
+          <table>
+            <thead>
+              <tr>
+                <th>Vehicle</th>
+                {Array.from({ length: days }, (_, i) => (
+                  <th key={i}>{i + 1}</th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {cars
+                .filter((c) => !q.vehicleId || c.id === q.vehicleId)
+                .map((car) => (
+                  <tr key={car.id}>
+                    <th>
+                      {car.brand} {car.model}
+                      <small>
+                        {car.registration}
+                        {car.archived ? " · Archived" : ""}
+                      </small>
+                    </th>
+                    {Array.from({ length: days }, (_, i) => {
+                      const day = new Date(+safe + i * 86400000),
+                        next = new Date(+day + 86400000),
+                        booking = reservations.find(
+                          (r) =>
+                            r.vehicleId === car.id &&
+                            r.pickupAt < next &&
+                            r.returnAt > day,
+                        ),
+                        block = blocks.find(
+                          (b) =>
+                            b.vehicleId === car.id &&
+                            b.startAt < next &&
+                            b.endAt > day,
+                        );
+                      return (
+                        <td key={i}>
+                          {booking ? (
+                            <Link
+                              title={booking.reference + " · " + booking.status}
+                              aria-label={
+                                car.model +
+                                " day " +
+                                (i + 1) +
+                                " " +
+                                booking.status
+                              }
+                              className={
+                                "timeline-cell " + booking.status.toLowerCase()
+                              }
+                              href={"/admin/reservations/" + booking.id}
+                            >
+                              {booking.status === "PENDING"
+                                ? "P"
+                                : booking.status === "ACTIVE"
+                                  ? "A"
+                                  : "C"}
+                            </Link>
+                          ) : block ? (
+                            <span
+                              className="timeline-cell block"
+                              title={block.reason}
+                            >
+                              M
+                            </span>
+                          ) : (
+                            <span
+                              className="timeline-cell free"
+                              aria-label="No booking or block"
+                            >
+                              ·
+                            </span>
+                          )}
+                        </td>
+                      );
+                    })}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
+      </section>
       <div className="calendar-grid">
         {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((v) => (
           <div

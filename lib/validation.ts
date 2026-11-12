@@ -54,7 +54,12 @@ export const settingsSchema = z.object({
   monthlyDiscount: z.coerce.number().min(0).max(100),
   pendingExpiryHours: z.coerce.number().int().min(1).max(720),
   pendingBlocks: z.boolean(),
-  airportHandoverFee: z.coerce.number().min(0).max(100000).nullable().optional(),
+  airportHandoverFee: z.coerce
+    .number()
+    .min(0)
+    .max(100000)
+    .nullable()
+    .optional(),
   securityDeposit: z.coerce.number().min(0).max(1000000).nullable().optional(),
   rentalTerms: z.string().trim().max(10000).nullable().optional(),
 });
@@ -70,6 +75,9 @@ export const editSchema = periodSchema.extend({
   ]),
   internalNotes: z.string().max(4000).optional(),
   flightNumber: z.string().trim().max(20).optional(),
-  arrivalTime: z.string().regex(/^$|^([01]\d|2[0-3]):[0-5]\d$/).optional(),
+  arrivalTime: z
+    .string()
+    .regex(/^$|^([01]\d|2[0-3]):[0-5]\d$/)
+    .optional(),
   meetingPoint: z.string().trim().max(200).optional(),
 });

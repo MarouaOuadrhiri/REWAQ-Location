@@ -1,19 +1,239 @@
 "use client";
-import {useState} from 'react';
-import {useRouter} from 'next/navigation';
-import {api} from './AdminForms';
-import {money} from '@/lib/pricing';
-export function RequestReview({request}:{request:any}) {
- const router=useRouter(),[error,setError]=useState(''),[busy,setBusy]=useState(false);
- return <form className="operation-request" onSubmit={async e=>{e.preventDefault();setBusy(true);setError('');try{await api('/api/admin/requests/'+request.id,'PATCH',Object.fromEntries(new FormData(e.currentTarget)));router.refresh();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}><strong>{request.kind} request · {request.status}</strong><p>{request.message}</p>{request.status==='OPEN'?<><p className="muted">Apply any approved booking changes above first. Closing this request does not change dates or cancel the reservation.</p><label>Reply visible to customer<textarea name="response" minLength={3} maxLength={2000} required/></label><label>Outcome<select name="status"><option value="RESOLVED">Handled</option><option value="DECLINED">Declined</option></select></label>{error&&<p role="alert" className="error">{error}</p>}<button className="button small" disabled={busy}>Save review</button></>:<p>{request.response}</p>}</form>;
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { api } from "./AdminForms";
+import { money } from "@/lib/pricing";
+export function RequestReview({ request }: { request: any }) {
+  const router = useRouter(),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false);
+  return (
+    <form
+      className="operation-request"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setBusy(true);
+        setError("");
+        try {
+          await api(
+            "/api/admin/requests/" + request.id,
+            "PATCH",
+            Object.fromEntries(new FormData(e.currentTarget)),
+          );
+          router.refresh();
+        } catch (e) {
+          setError((e as Error).message);
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      <strong>
+        {request.kind} request · {request.status}
+      </strong>
+      <p>{request.message}</p>
+      {request.status === "OPEN" ? (
+        <>
+          <p className="muted">
+            Apply any approved booking changes above first. Closing this request
+            does not change dates or cancel the reservation.
+          </p>
+          <label>
+            Reply visible to customer
+            <textarea name="response" minLength={3} maxLength={2000} required />
+          </label>
+          <label>
+            Outcome
+            <select name="status">
+              <option value="RESOLVED">Handled</option>
+              <option value="DECLINED">Declined</option>
+            </select>
+          </label>
+          {error && (
+            <p role="alert" className="error">
+              {error}
+            </p>
+          )}
+          <button className="button small" disabled={busy}>
+            Save review
+          </button>
+        </>
+      ) : (
+        <p>{request.response}</p>
+      )}
+    </form>
+  );
 }
-export function InspectionForm({reservationId,kind}:{reservationId:string;kind:'DEPARTURE'|'RETURN'}) {
- const router=useRouter(),[error,setError]=useState(''),[busy,setBusy]=useState(false);
- return <form className="panel" onSubmit={async e=>{e.preventDefault();setError('');setBusy(true);const data=new FormData(e.currentTarget);data.set('reservationId',reservationId);data.set('kind',kind);try{await api('/api/admin/inspections','POST',data);router.refresh();}catch(e){setError((e as Error).message);}finally{setBusy(false);}}}><h3>{kind==='DEPARTURE'?'Departure inspection':'Return inspection'}</h3><p className="muted">Saving preserves this report and {kind==='DEPARTURE'?'starts the active rental':'completes the rental'}. Check the condition notes before saving.</p><div className="form-grid"><label>Odometer (km)<input type="number" name="odometer" min={0} max={9999999} required/></label><label>Fuel (%)<input type="number" name="fuelPercent" min={0} max={100} required/></label></div><div className="inspection-checks">{[['bodywork','Bodywork reviewed'],['tyres','Tyres reviewed'],['lights','Lights reviewed'],['documents','Documents reviewed'],['equipment','Equipment reviewed']].map(([key,label])=><label key={key}><input type="checkbox" name={key} required/>{label}</label>)}</div><label>Condition and any damage<textarea name="conditionNotes" minLength={3} maxLength={4000} required placeholder="Record scratches, damage and any items agreed at handover."/></label><label>Private condition photos (up to 6, 5 MB each)<input name="photos" type="file" accept="image/png,image/jpeg,image/webp" multiple/></label>{error&&<p className="error" role="alert">{error}</p>}<button className="button" disabled={busy}>{busy?'Saving…':'Save inspection & '+(kind==='DEPARTURE'?'start rental':'complete rental')}</button></form>;
+export function InspectionForm({
+  reservationId,
+  kind,
+}: {
+  reservationId: string;
+  kind: "DEPARTURE" | "RETURN";
+}) {
+  const router = useRouter(),
+    [error, setError] = useState(""),
+    [busy, setBusy] = useState(false);
+  return (
+    <form
+      className="panel"
+      onSubmit={async (e) => {
+        e.preventDefault();
+        setError("");
+        setBusy(true);
+        const data = new FormData(e.currentTarget);
+        data.set("reservationId", reservationId);
+        data.set("kind", kind);
+        try {
+          await api("/api/admin/inspections", "POST", data);
+          router.refresh();
+        } catch (e) {
+          setError((e as Error).message);
+        } finally {
+          setBusy(false);
+        }
+      }}
+    >
+      <h3>
+        {kind === "DEPARTURE" ? "Departure inspection" : "Return inspection"}
+      </h3>
+      <p className="muted">
+        Saving preserves this report and{" "}
+        {kind === "DEPARTURE"
+          ? "starts the active rental"
+          : "completes the rental"}
+        . Check the condition notes before saving.
+      </p>
+      <div className="form-grid">
+        <label>
+          Odometer (km)
+          <input type="number" name="odometer" min={0} max={9999999} required />
+        </label>
+        <label>
+          Fuel (%)
+          <input type="number" name="fuelPercent" min={0} max={100} required />
+        </label>
+      </div>
+      <div className="inspection-checks">
+        {[
+          ["bodywork", "Bodywork reviewed"],
+          ["tyres", "Tyres reviewed"],
+          ["lights", "Lights reviewed"],
+          ["documents", "Documents reviewed"],
+          ["equipment", "Equipment reviewed"],
+        ].map(([key, label]) => (
+          <label key={key}>
+            <input type="checkbox" name={key} required />
+            {label}
+          </label>
+        ))}
+      </div>
+      <label>
+        Condition and any damage
+        <textarea
+          name="conditionNotes"
+          minLength={3}
+          maxLength={4000}
+          required
+          placeholder="Record scratches, damage and any items agreed at handover."
+        />
+      </label>
+      <label>
+        Private condition photos (up to 6, 5 MB each)
+        <input
+          name="photos"
+          type="file"
+          accept="image/png,image/jpeg,image/webp"
+          multiple
+        />
+      </label>
+      {error && (
+        <p className="error" role="alert">
+          {error}
+        </p>
+      )}
+      <button className="button" disabled={busy}>
+        {busy
+          ? "Saving…"
+          : "Save inspection & " +
+            (kind === "DEPARTURE" ? "start rental" : "complete rental")}
+      </button>
+    </form>
+  );
 }
-export function Ledger({reservation}:{reservation:any}) {
- const entries=reservation.payments||[];
- const rental=entries.filter((p:any)=>!p.kind.startsWith('DEPOSIT')).reduce((s:number,p:any)=>s+(p.kind.endsWith('REFUND')?-1:1)*Number(p.amount),0);
- const deposit=entries.filter((p:any)=>p.kind.startsWith('DEPOSIT')).reduce((s:number,p:any)=>s+(p.kind.endsWith('REFUND')?-1:1)*Number(p.amount),0);
- return <section className="panel"><h3>Payment ledger</h3><div className="ops-metrics"><div><small>Net rental received</small><strong>{money(rental)}</strong></div><div><small>Rental balance due</small><strong>{money(Math.max(0,Number(reservation.total)-rental))}</strong></div><div><small>Deposit held</small><strong>{money(deposit)}</strong></div></div>{rental>Number(reservation.total)&&<p className="error">Rental overpayment: {money(rental-Number(reservation.total))}. Review a refund.</p>}<div className="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Method</th><th>Amount</th><th>Memo</th></tr></thead><tbody>{entries.map((p:any)=><tr key={p.id}><td>{new Date(p.receivedAt).toLocaleDateString('en-GB')}</td><td>{p.kind.replaceAll('_',' ')}</td><td>{p.method}</td><td>{p.kind.endsWith('REFUND')?'−':''}{money(p.amount)}</td><td>{p.memo||'—'}</td></tr>)}{!entries.length&&<tr><td colSpan={5}>No payments recorded.</td></tr>}</tbody></table></div></section>;
+export function Ledger({ reservation }: { reservation: any }) {
+  const entries = reservation.payments || [];
+  const rental = entries
+    .filter((p: any) => !p.kind.startsWith("DEPOSIT"))
+    .reduce(
+      (s: number, p: any) =>
+        s + (p.kind.endsWith("REFUND") ? -1 : 1) * Number(p.amount),
+      0,
+    );
+  const deposit = entries
+    .filter((p: any) => p.kind.startsWith("DEPOSIT"))
+    .reduce(
+      (s: number, p: any) =>
+        s + (p.kind.endsWith("REFUND") ? -1 : 1) * Number(p.amount),
+      0,
+    );
+  return (
+    <section className="panel">
+      <h3>Payment ledger</h3>
+      <div className="ops-metrics">
+        <div>
+          <small>Net rental received</small>
+          <strong>{money(rental)}</strong>
+        </div>
+        <div>
+          <small>Rental balance due</small>
+          <strong>
+            {money(Math.max(0, Number(reservation.total) - rental))}
+          </strong>
+        </div>
+        <div>
+          <small>Deposit held</small>
+          <strong>{money(deposit)}</strong>
+        </div>
+      </div>
+      {rental > Number(reservation.total) && (
+        <p className="error">
+          Rental overpayment: {money(rental - Number(reservation.total))}.
+          Review a refund.
+        </p>
+      )}
+      <div className="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Type</th>
+              <th>Method</th>
+              <th>Amount</th>
+              <th>Memo</th>
+            </tr>
+          </thead>
+          <tbody>
+            {entries.map((p: any) => (
+              <tr key={p.id}>
+                <td>{new Date(p.receivedAt).toLocaleDateString("en-GB")}</td>
+                <td>{p.kind.replaceAll("_", " ")}</td>
+                <td>{p.method}</td>
+                <td>
+                  {p.kind.endsWith("REFUND") ? "−" : ""}
+                  {money(p.amount)}
+                </td>
+                <td>{p.memo || "—"}</td>
+              </tr>
+            ))}
+            {!entries.length && (
+              <tr>
+                <td colSpan={5}>No payments recorded.</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
+  );
 }
