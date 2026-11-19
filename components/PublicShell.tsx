@@ -40,6 +40,8 @@ export function Footer() {
           </div>
           <div>
             <h3>Explore REWAQ Location</h3>
+            <Link href="/partner/register">Devenir partenaire</Link>
+            <Link href="/partner/login">Espace agence</Link>
             <Link href="/cars">Find a car</Link>
             <Link href="/services">Airport delivery</Link>
             <Link href="/about">Our story</Link>

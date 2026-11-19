@@ -1,3 +1,9 @@
+import {
+  visibleVehicles,
+  agencyPricingSelect,
+  publicVehicle,
+} from "@/lib/marketplace";
+import { settings } from "@/lib/reservations";
 import { db } from "@/lib/db";
 import { Header, Footer } from "@/components/PublicShell";
 import { CompareCars } from "@/components/CompareCars";
@@ -13,11 +19,16 @@ export default async function Compare({
   }>;
 }) {
   const q = await searchParams,
-    cars = await db.vehicle.findMany({
-      where: { archived: false },
-      include: { images: { orderBy: { position: "asc" }, take: 1 } },
+    rawCars = await db.vehicle.findMany({
+      where: visibleVehicles,
+      include: {
+        agency: { select: agencyPricingSelect },
+        images: { orderBy: { position: "asc" }, take: 1 },
+      },
       orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
     });
+  const config = await settings();
+  const cars = rawCars.map((v) => publicVehicle(v, config));
   const requested = Array.isArray(q.car)
     ? q.car
     : q.car

@@ -6,7 +6,11 @@ import sharp from "sharp";
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
-export async function uploadVehicleImages(req: NextRequest, vehicleId: string) {
+export async function uploadVehicleImages(
+  req: NextRequest,
+  vehicleId: string,
+  ownerAgencyId?: string,
+) {
   const form = await req.formData();
   const files = [...form.getAll("files"), ...form.getAll("file")].filter(
     (v): v is File => v instanceof File && v.size > 0,
@@ -41,7 +45,12 @@ export async function uploadVehicleImages(req: NextRequest, vehicleId: string) {
     await db.$transaction(
       async (tx) => {
         await lockVehicles(tx, [vehicleId]);
-        await tx.vehicle.findUniqueOrThrow({ where: { id: vehicleId } });
+        await tx.vehicle.findFirstOrThrow({
+          where: {
+            id: vehicleId,
+            ...(ownerAgencyId ? { agencyId: ownerAgencyId } : {}),
+          },
+        });
         const current = await tx.vehicleImage.findMany({
           where: { vehicleId },
           orderBy: [{ position: "asc" }, { createdAt: "asc" }, { id: "asc" }],
@@ -90,6 +99,7 @@ export async function uploadVehicleImages(req: NextRequest, vehicleId: string) {
 export async function setPrimaryVehicleImage(
   req: NextRequest,
   vehicleId: string,
+  ownerAgencyId?: string,
 ) {
   const { imageId } = z
     .object({ imageId: z.string().min(1) })

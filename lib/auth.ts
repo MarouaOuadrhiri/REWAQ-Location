@@ -18,7 +18,11 @@ export async function requireAdmin() {
   return user;
 }
 export async function sameOrigin(request: Request) {
-  const origin = request.headers.get("origin");
+  const origin =
+    request.headers.get("origin") ??
+    (request.headers.get("referer")
+      ? new URL(request.headers.get("referer")!).origin
+      : null);
   const h = await headers();
   if (
     !origin ||

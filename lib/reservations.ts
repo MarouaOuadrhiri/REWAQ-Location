@@ -1,7 +1,13 @@
 import { Prisma, ReservationStatus } from "@prisma/client";
 import { randomBytes } from "node:crypto";
 import { db } from "./db";
-import { rentalQuote, dates } from "./pricing";
+import {
+  marketplaceQuote,
+  bookingSplit,
+  agencyPricingSelect,
+  visibleVehicles,
+} from "./marketplace";
+import { dates } from "./pricing";
 import { hash, token } from "./auth";
 import { bookingSchema, editSchema } from "./validation";
 type Tx = Prisma.TransactionClient;
@@ -62,11 +68,17 @@ export async function createBooking(raw: unknown) {
       await lockVehicles(tx, [input.vehicleId]);
       const vehicle = await tx.vehicle.findUniqueOrThrow({
         where: { id: input.vehicleId },
+        include: { agency: { select: agencyPricingSelect } },
       });
-      if (vehicle.archived) throw new Error("This vehicle is archived.");
+      if (
+        vehicle.archived ||
+        vehicle.listingStatus !== "APPROVED" ||
+        (vehicle.agencyId && vehicle.agency?.status !== "ACTIVE")
+      )
+        throw new Error("This vehicle is not available for booking.");
       await available(tx, vehicle.id, pickupAt, returnAt);
       const config = await settings(tx);
-      const pricing = rentalQuote(
+      const pricing = marketplaceQuote(
         vehicle,
         config,
         pickupAt,
@@ -80,6 +92,7 @@ export async function createBooking(raw: unknown) {
           reference: "LOC-" + randomBytes(6).toString("hex").toUpperCase(),
           accessTokenHash: hash(accessToken),
           vehicleId: vehicle.id,
+          ...bookingSplit(pricing),
           customerId: customer.id,
           flightNumber: input.flightNumber?.toUpperCase() || null,
           arrivalTime: input.arrivalTime || null,
@@ -159,6 +172,7 @@ export async function editBooking(id: string, raw: unknown, adminId: string) {
         throw new Error("Historical reservations are immutable.");
       const vehicle = await tx.vehicle.findUniqueOrThrow({
         where: { id: input.vehicleId },
+        include: { agency: { select: agencyPricingSelect } },
       });
       if (
         vehicle.archived &&
@@ -172,7 +186,7 @@ export async function editBooking(id: string, raw: unknown, adminId: string) {
         (pickupAt > new Date() || returnAt <= new Date())
       )
         throw new Error("An active rental must include the current time.");
-      const pricing = rentalQuote(
+      const pricing = marketplaceQuote(
         vehicle,
         await settings(tx),
         pickupAt,
@@ -184,6 +198,7 @@ export async function editBooking(id: string, raw: unknown, adminId: string) {
         where: { id },
         data: {
           ...input,
+          ...bookingSplit(pricing),
           pickupAt,
           returnAt,
           days: pricing.days,

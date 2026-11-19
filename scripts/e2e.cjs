@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 const { PrismaClient } = require("@prisma/client");
 const db = new PrismaClient();
-const base = "http://127.0.0.1:3000";
+const base = process.env.TEST_BASE_URL || "http://127.0.0.1:3000";
 let cookie = "";
 let checks = 0;
 async function request(url, method = "GET", body, auth = false) {

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
   LayoutDashboard,
+  Building2,
   CarFront,
   CalendarDays,
   Users,
@@ -16,6 +17,7 @@ const links = [
   ["dashboard", "Overview", LayoutDashboard],
   ["today", "Today’s operations", ClipboardList],
   ["cars", "Fleet management", CarFront],
+  ["agencies", "Partner agencies", Building2],
   ["reservations", "Reservations", ClipboardList],
   ["customers", "Customers", Users],
   ["calendar", "Fleet planning", CalendarDays],

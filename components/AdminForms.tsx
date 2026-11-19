@@ -33,13 +33,47 @@ function Notice({ error, success }: { error: string; success?: string }) {
     </>
   );
 }
-export function VehicleForm({ vehicle }: { vehicle?: any }) {
+export function VehicleForm({
+  vehicle,
+  partnerMode = false,
+}: {
+  vehicle?: any;
+  partnerMode?: boolean;
+}) {
+  const vehicleApi = partnerMode
+    ? "/api/partner/vehicles"
+    : "/api/admin/vehicles";
+  const vehiclePage = partnerMode ? "/partner/cars/" : "/admin/cars/";
+  const partnerLabels: Record<string, string> = {
+    Brand: "Marque",
+    Model: "Modèle",
+    "URL slug": "Identifiant de la fiche",
+    "Registration number": "Immatriculation",
+    Year: "Année",
+    Category: "Catégorie",
+    Seats: "Places",
+    "Daily price (DH)": "Votre tarif net / jour (DH)",
+    "Weekly price (DH)": "Votre tarif net / semaine (DH)",
+    "Monthly price (DH)": "Votre tarif net / 30 jours (DH)",
+    "Weekly discount % (blank = default)": "Remise semaine % (vide = défaut)",
+    "Monthly discount % (blank = default)": "Remise mois % (vide = défaut)",
+  };
   const router = useRouter();
   const [error, setError] = useState(""),
     [busy, setBusy] = useState(false),
     [success, setSuccess] = useState("");
   return (
     <>
+      {partnerMode && (
+        <div className="partner-form-explainer">
+          <strong>Vos tarifs nets. Notre visibilité.</strong>
+          <p>
+            Indiquez le montant qui revient à votre agence. REWAQ ajoute sa
+            marge au prix client. Une modification de la fiche repasse en
+            validation avant publication.
+          </p>
+        </div>
+      )}
       <form
         className="panel"
         onSubmit={async (e) => {
@@ -56,11 +90,11 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
             data.monthlyDiscount === "" ? null : Number(data.monthlyDiscount);
           try {
             const result = await api(
-              "/api/admin/vehicles" + (vehicle ? "/" + vehicle.id : ""),
+              vehicleApi + (vehicle ? "/" + vehicle.id : ""),
               vehicle ? "PATCH" : "POST",
               data,
             );
-            if (!vehicle) router.push("/admin/cars/" + result.id);
+            if (!vehicle) router.push(vehiclePage + result.id);
             else {
               setSuccess("Vehicle saved.");
               router.refresh();
@@ -88,7 +122,7 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
             ["monthlyDiscount", "Monthly discount % (blank = default)"],
           ].map(([name, title]) => (
             <label key={name}>
-              {title}
+              {partnerMode ? (partnerLabels[title] ?? title) : title}
               <input
                 name={name}
                 required={!name.includes("Discount")}
@@ -123,7 +157,7 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
             </select>
           </label>
           <label>
-            Fuel
+            {partnerMode ? "Carburant" : "Fuel"}
             <select name="fuel" defaultValue={vehicle?.fuel}>
               {["Petrol", "Diesel", "Electric", "Hybrid"].map((v) => (
                 <option key={v}>{v}</option>
@@ -139,15 +173,17 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
               defaultValue={vehicle?.description}
             />
           </label>
-          <label>
-            <input
-              style={{ width: "auto", marginRight: 10 }}
-              type="checkbox"
-              name="featured"
-              defaultChecked={vehicle?.featured}
-            />
-            Featured in hero
-          </label>
+          {!partnerMode && (
+            <label>
+              <input
+                style={{ width: "auto", marginRight: 10 }}
+                type="checkbox"
+                name="featured"
+                defaultChecked={vehicle?.featured}
+              />
+              Featured in hero
+            </label>
+          )}
           <label>
             <input
               style={{ width: "auto", marginRight: 10 }}
@@ -155,12 +191,20 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
               name="archived"
               defaultChecked={vehicle?.archived}
             />
-            Archived (preserves bookings)
+            {partnerMode
+              ? "Archivée (historique conservé)"
+              : "Archived (preserves bookings)"}
           </label>
         </div>
         <Notice error={error} success={success} />
         <button className="button" disabled={busy}>
-          {busy ? "Saving…" : "Save vehicle"}
+          {busy
+            ? partnerMode
+              ? "Enregistrement…"
+              : "Saving…"
+            : partnerMode
+              ? "Enregistrer la voiture"
+              : "Save vehicle"}
         </button>
       </form>
       {vehicle && (
@@ -174,7 +218,7 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
             const form = e.currentTarget;
             try {
               await api(
-                "/api/admin/vehicles/" + vehicle.id + "/images",
+                vehicleApi + "/" + vehicle.id + "/images",
                 "POST",
                 new FormData(form),
               );
@@ -190,7 +234,9 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
             }
           }}
         >
-          <h3>Vehicle photos</h3>
+          <h3>
+            {partnerMode ? "Les photos de votre voiture" : "Vehicle photos"}
+          </h3>
           <p className="muted">
             The primary photo appears on cards. All photos are available in
             vehicle details. Choose any photo below as the primary image.
@@ -208,7 +254,7 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
                     setError("");
                     try {
                       await api(
-                        "/api/admin/vehicles/" + vehicle.id + "/images",
+                        vehicleApi + "/" + vehicle.id + "/images",
                         "PATCH",
                         { imageId: v.id },
                       );
@@ -221,7 +267,13 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
                     }
                   }}
                 >
-                  {i === 0 ? "Primary · shown on cards" : "Set as primary"}
+                  {i === 0
+                    ? partnerMode
+                      ? "Principale · visible sur les cartes"
+                      : "Primary · shown on cards"
+                    : partnerMode
+                      ? "Définir comme principale"
+                      : "Set as primary"}
                 </button>
               </div>
             ))}
@@ -238,7 +290,7 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
               />
             </label>
             <label>
-              Photo description
+              {partnerMode ? "Description des photos" : "Photo description"}
               <input name="alt" required />
             </label>
           </div>
@@ -252,7 +304,13 @@ export function VehicleForm({ vehicle }: { vehicle?: any }) {
             disabled={busy}
             style={{ marginTop: 15 }}
           >
-            {busy ? "Uploading…" : "Upload photos"}
+            {busy
+              ? partnerMode
+                ? "Envoi…"
+                : "Uploading…"
+              : partnerMode
+                ? "Ajouter les photos"
+                : "Upload photos"}
           </button>
         </form>
       )}
@@ -294,6 +352,20 @@ export function SettingsForm({ settings }: { settings: any }) {
       }}
     >
       <div className="form-grid">
+        <label>
+          Default partner markup (%)
+          <input
+            type="number"
+            step=".01"
+            min="0"
+            max="100"
+            name="partnerMarkup"
+            defaultValue={settings.partnerMarkup ?? 10}
+          />
+          <small>
+            Added to partner net rates. Existing booking snapshots are retained.
+          </small>
+        </label>
         <label>
           Default weekly discount (%)
           <input

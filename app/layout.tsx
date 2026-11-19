@@ -3,6 +3,7 @@ import "./globals.css";
 import "./booking-design.css";
 import "./medina-brand.css";
 import "./rewaq-brand.css";
+import "./partner.css";
 export const metadata: Metadata = {
   title: {
     default: "REWAQ Location — Marrakech car rental & airport delivery",

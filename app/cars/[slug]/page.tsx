@@ -1,3 +1,8 @@
+import {
+  visibleVehicles,
+  agencyPricingSelect,
+  publicVehicle,
+} from "@/lib/marketplace";
 import { VehicleGallery } from "@/components/VehicleGallery";
 import { notFound } from "next/navigation";
 import { settings } from "@/lib/reservations";
@@ -26,17 +31,25 @@ export default async function Details({
 }) {
   const { slug } = await params;
   const initial = await searchParams;
-  const car = await db.vehicle.findUnique({
-    where: { slug, archived: false },
-    include: { images: { orderBy: { position: "asc" } } },
+  const rawCar = await db.vehicle.findUnique({
+    where: { slug, ...visibleVehicles },
+    include: {
+      agency: { select: agencyPricingSelect },
+      images: { orderBy: { position: "asc" } },
+    },
   });
-  if (!car) notFound();
+  if (!rawCar) notFound();
   const policies = await settings();
-  const similar = await db.vehicle.findMany({
-    where: { archived: false, category: car.category, id: { not: car.id } },
-    include: { images: { orderBy: { position: "asc" } } },
+  const car = publicVehicle(rawCar, policies);
+  const rawSimilar = await db.vehicle.findMany({
+    where: { ...visibleVehicles, category: car.category, id: { not: car.id } },
+    include: {
+      agency: { select: agencyPricingSelect },
+      images: { orderBy: { position: "asc" } },
+    },
     take: 3,
   });
+  const similar = rawSimilar.map((v) => publicVehicle(v, policies));
   return (
     <>
       <Header />

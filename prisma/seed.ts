@@ -13,14 +13,17 @@ async function main() {
     throw new Error(
       "Set ADMIN_EMAIL and a unique ADMIN_PASSWORD of at least 16 characters in .env.",
     );
+  const passwordHash = await hash(password, 12);
   await db.admin.upsert({
     where: { email },
     create: {
       email,
       name: "Fleet Administrator",
-      passwordHash: await hash(password, 12),
+      passwordHash,
     },
-    update: {},
+    update: {
+      passwordHash,
+    },
   });
   await db.pricingSettings.upsert({
     where: { id: 1 },

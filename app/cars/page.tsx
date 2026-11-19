@@ -1,3 +1,8 @@
+import {
+  visibleVehicles,
+  agencyPricingSelect,
+  publicVehicle,
+} from "@/lib/marketplace";
 import Link from "next/link";
 import { Plane, SlidersHorizontal, ArrowRight, MapPin } from "lucide-react";
 import { db } from "@/lib/db";
@@ -29,15 +34,15 @@ export default async function Fleet({
   const [config, all] = await Promise.all([
     settings(),
     db.vehicle.findMany({
-      where: { archived: false },
+      where: visibleVehicles,
       select: { brand: true, category: true },
     }),
   ]);
-  const cars = error
+  const rawCars = error
     ? []
     : await db.vehicle.findMany({
         where: {
-          archived: false,
+          ...visibleVehicles,
           brand: q.brand || undefined,
           category: q.category || undefined,
           transmission: q.transmission || undefined,
@@ -50,10 +55,6 @@ export default async function Fleet({
                 ),
               }
             : undefined,
-          dailyPrice:
-            q.price && Number(q.price) > 0
-              ? { lte: Number(q.price) }
-              : undefined,
           ...(period
             ? {
                 reservations: {
@@ -83,7 +84,10 @@ export default async function Fleet({
               }
             : {}),
         },
-        include: { images: { orderBy: { position: "asc" } } },
+        include: {
+          agency: { select: agencyPricingSelect },
+          images: { orderBy: { position: "asc" } },
+        },
         orderBy:
           q.sort === "price-desc"
             ? { dailyPrice: "desc" }
@@ -91,6 +95,21 @@ export default async function Fleet({
               ? { brand: "asc" }
               : { dailyPrice: "asc" },
       });
+  const cars = rawCars
+    .map((v) => publicVehicle(v, config))
+    .filter(
+      (v) =>
+        !q.price ||
+        Number(q.price) <= 0 ||
+        Number(v.dailyPrice) <= Number(q.price),
+    )
+    .sort((a, b) =>
+      q.sort === "brand"
+        ? a.brand.localeCompare(b.brand)
+        : q.sort === "price-desc"
+          ? Number(b.dailyPrice) - Number(a.dailyPrice)
+          : Number(a.dailyPrice) - Number(b.dailyPrice),
+    );
   const query = new URLSearchParams();
   for (const key of ["pickupAt", "returnAt", "location"])
     if (q[key]) query.set(key, q[key]!);

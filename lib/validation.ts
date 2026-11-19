@@ -54,6 +54,7 @@ export const settingsSchema = z.object({
   monthlyDiscount: z.coerce.number().min(0).max(100),
   pendingExpiryHours: z.coerce.number().int().min(1).max(720),
   pendingBlocks: z.boolean(),
+  partnerMarkup: z.coerce.number().min(0).max(100).optional(),
   airportHandoverFee: z.coerce
     .number()
     .min(0)

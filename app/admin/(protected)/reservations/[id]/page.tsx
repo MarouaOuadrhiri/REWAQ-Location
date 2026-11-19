@@ -33,6 +33,26 @@ export default async function Reservation({
       <p className="muted">
         {item.payments.length} ledger entries · All amounts in MAD / DH
       </p>
+      {item.agencyId && (
+        <section className="panel" style={{ marginBottom: 25 }}>
+          <h3>Partner pricing split</h3>
+          <div className="ops-metrics">
+            <div>
+              <small>Agency net rental</small>
+              <strong>{money(item.supplierSubtotal)}</strong>
+            </div>
+            <div>
+              <small>REWAQ markup · {Number(item.commissionRate)}%</small>
+              <strong>{money(item.platformMarkup)}</strong>
+            </div>
+          </div>
+          <p className="muted">
+            Rental amounts only; handover fees and refundable deposits are
+            excluded from the markup. This is a booking split, not a payout
+            confirmation.
+          </p>
+        </section>
+      )}
       <Ledger reservation={JSON.parse(JSON.stringify(item))} />
       <section className="ops-section">
         <h2>Customer requests</h2>

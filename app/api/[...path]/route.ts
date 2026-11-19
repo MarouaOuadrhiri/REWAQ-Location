@@ -8,6 +8,7 @@ import {
   uploadVehicleImages,
   setPrimaryVehicleImage,
 } from "@/lib/vehicle-images";
+import { partnerOperations, partnerAdminOperations } from "@/lib/partners";
 import { publicOperations, adminOperations } from "@/lib/operations";
 import { admin, requireAdmin, sameOrigin, hash, token } from "@/lib/auth";
 import {
@@ -18,7 +19,14 @@ import {
   lockVehicles,
   settings,
 } from "@/lib/reservations";
-import { rentalQuote, dates } from "@/lib/pricing";
+import {
+  marketplaceQuote,
+  publicQuote,
+  publicVehicle,
+  agencyPricingSelect,
+  visibleVehicles,
+} from "@/lib/marketplace";
+import { dates } from "@/lib/pricing";
 import {
   customerSchema,
   settingsSchema,
@@ -35,6 +43,8 @@ async function handler(
     const route = segments.join("/");
     const method = req.method;
     if (method !== "GET") await sameOrigin(req);
+    if (segments[0] === "partner")
+      return await partnerOperations(req, segments.slice(1));
     if (route === "auth/login" && method === "POST") {
       const key = "login";
       const previous = attempts.get(key);
@@ -43,20 +53,64 @@ async function handler(
           ? previous
           : { count: 0, reset: Date.now() + 60000 };
       attempts.set(key, limit);
-      if (++limit.count > 20)
+
+      const contentType = req.headers.get("content-type") || "";
+      const isFormSubmission =
+        contentType.includes("application/x-www-form-urlencoded") ||
+        contentType.includes("multipart/form-data");
+
+      if (++limit.count > 20) {
+        if (isFormSubmission) {
+          return NextResponse.redirect(
+            new URL("/admin/login?error=Too%20many%20attempts.%20Wait%20a%20minute.", req.url),
+            303,
+          );
+        }
         return NextResponse.json(
           { error: "Too many attempts. Wait a minute." },
           { status: 429 },
         );
-      const data = z
+      }
+
+      let rawBody: unknown;
+      if (isFormSubmission) {
+        const formData = await req.formData();
+        rawBody = Object.fromEntries(formData.entries());
+      } else {
+        rawBody = await req.json();
+      }
+
+      const parsed = z
         .object({ email: z.string().email(), password: z.string().max(200) })
-        .parse(await req.json());
+        .safeParse(rawBody);
+
+      if (!parsed.success) {
+        if (isFormSubmission) {
+          return NextResponse.redirect(
+            new URL("/admin/login?error=Invalid%20email%20or%20password.", req.url),
+            303,
+          );
+        }
+        return NextResponse.json(
+          { error: "Invalid email or password." },
+          { status: 400 },
+        );
+      }
+
+      const data = parsed.data;
       const user = await db.admin.findUnique({ where: { email: data.email } });
-      if (!user || !(await compare(data.password, user.passwordHash)))
+      if (!user || !(await compare(data.password, user.passwordHash))) {
+        if (isFormSubmission) {
+          return NextResponse.redirect(
+            new URL("/admin/login?error=Invalid%20email%20or%20password.", req.url),
+            303,
+          );
+        }
         return NextResponse.json(
           { error: "Invalid email or password." },
           { status: 401 },
         );
+      }
       const value = token();
       await db.adminSession.create({
         data: {
@@ -72,6 +126,9 @@ async function handler(
         path: "/",
         maxAge: 28800,
       });
+      if (isFormSubmission) {
+        return NextResponse.redirect(new URL("/admin/dashboard", req.url), 303);
+      }
       return NextResponse.json({ ok: true });
     }
     if (route === "auth/session")
@@ -104,33 +161,42 @@ async function handler(
         .parse(await req.json());
       const period = dates(input.pickupAt, input.returnAt);
       const vehicle = await db.vehicle.findUniqueOrThrow({
-        where: { id: input.vehicleId, archived: false },
+        where: { id: input.vehicleId, ...visibleVehicles },
+        include: { agency: { select: agencyPricingSelect } },
       });
       await available(db, vehicle.id, period.pickupAt, period.returnAt);
       return NextResponse.json(
-        rentalQuote(
-          vehicle,
-          await settings(),
-          period.pickupAt,
-          period.returnAt,
-          input.pickupLocation,
-          input.returnLocation,
+        publicQuote(
+          marketplaceQuote(
+            vehicle,
+            await settings(),
+            period.pickupAt,
+            period.returnAt,
+            input.pickupLocation,
+            input.returnLocation,
+          ),
         ),
       );
     }
-    if (route === "vehicles" && method === "GET")
-      return NextResponse.json(
-        await db.vehicle.findMany({
-          where: { archived: false },
-          include: { images: { orderBy: { position: "asc" } } },
-        }),
-      );
+    if (route === "vehicles" && method === "GET") {
+      const config = await settings();
+      const items = await db.vehicle.findMany({
+        where: visibleVehicles,
+        include: {
+          agency: { select: agencyPricingSelect },
+          images: { orderBy: { position: "asc" } },
+        },
+      });
+      return NextResponse.json(items.map((v) => publicVehicle(v, config)));
+    }
     const publicResult = await publicOperations(req, segments);
     if (publicResult) return publicResult;
     if (segments[0] !== "admin")
       return NextResponse.json({ error: "Not found" }, { status: 404 });
     const user = await requireAdmin();
     await expirePending();
+    const partnerAdminResult = await partnerAdminOperations(req, segments);
+    if (partnerAdminResult) return partnerAdminResult;
     const [, resource, id, action] = segments;
     const operationResult = await adminOperations(req, segments, user);
     if (operationResult) return operationResult;
@@ -160,9 +226,9 @@ async function handler(
           }),
         );
       if (id && action === "images" && method === "POST")
-        return uploadVehicleImages(req, id);
+        return await uploadVehicleImages(req, id);
       if (id && action === "images" && method === "PATCH")
-        return setPrimaryVehicleImage(req, id);
+        return await setPrimaryVehicleImage(req, id);
     }
     if (resource === "reservations") {
       if (method === "GET")

@@ -1,0 +1,14 @@
+import {test} from 'node:test';
+import assert from 'node:assert/strict';
+import {marketplaceQuote,markedRates,publicVehicle,publicQuote} from '../lib/marketplace';
+const config={weeklyDiscount:5,monthlyDiscount:1,partnerMarkup:10,airportHandoverFee:75,securityDeposit:3000};
+const agency={id:'agency-a',name:'Test agency',status:'ACTIVE',commissionOverride:null};
+const car={id:'car-a',agencyId:agency.id,agency,dailyPrice:500,weeklyPrice:3000,monthlyPrice:9000};
+test('agency base 500 becomes retail 550 at approved default 10%',()=>{const q=marketplaceQuote(car,config,'2027-01-01','2027-01-02');assert.equal(q.total,550);assert.equal(q.supplierSubtotal,500);assert.equal(q.platformMarkup,50);assert.equal(q.commissionRate,10);});
+test('period discount applies before the recorded split',()=>{const q=marketplaceQuote(car,config,'2027-01-01','2027-01-08');assert.equal(q.supplierSubtotal,2850);assert.equal(q.rentalTotal,3135);assert.equal(q.platformMarkup,285);});
+test('deposit and airport handover fees are not marked up',()=>{const q=marketplaceQuote(car,config,'2027-01-01','2027-01-02','Marrakech Menara Airport (RAK)','Marrakech Menara Airport (RAK)');assert.equal(q.handoverFee,150);assert.equal(q.securityDeposit,3000);assert.equal(q.total,700);assert.equal(q.platformMarkup,50);});
+test('original direct fleet is unaffected by marketplace settings',()=>{const q=marketplaceQuote({...car,agencyId:null,agency:null},config,'2027-01-01','2027-01-02');assert.equal(q.total,500);assert.equal(q.platformMarkup,0);assert.equal(markedRates({...car,agencyId:null},config).dailyPrice,500);});
+test('explicit zero agency override wins over default',()=>{const q=marketplaceQuote({...car,agency:{...agency,commissionOverride:0}},config,'2027-01-01','2027-01-02');assert.equal(q.total,500);assert.equal(q.platformMarkup,0);});
+test('agency override 15% applies to quotes and display rates',()=>{const v={...car,agency:{...agency,commissionOverride:15}};assert.equal(markedRates(v,config).dailyPrice,575);assert.equal(marketplaceQuote(v,config,'2027-01-01','2027-01-02').total,575);});
+test('public quote strips internal agency financial split',()=>{const q=publicQuote(marketplaceQuote(car,config,'2027-01-01','2027-01-02'));assert.ok(!('supplierSubtotal' in q));assert.ok(!('commissionRate' in q));assert.equal(q.total,550);});
+test('public card DTO retains identity but removes agency configuration',()=>{const v=publicVehicle(car,config);assert.equal(v.id,'car-a');assert.equal(v.dailyPrice,550);assert.equal(v.agencyName,'Test agency');assert.ok(!('agency' in v));assert.ok(!('agencyId' in v));});

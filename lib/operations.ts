@@ -3,7 +3,13 @@ import { z } from "zod";
 import { db } from "./db";
 import { hash } from "./auth";
 import { available, lockVehicles, settings } from "./reservations";
-import { dates, rentalQuote } from "./pricing";
+import {
+  marketplaceQuote,
+  bookingSplit,
+  agencyPricingSelect,
+  visibleVehicles,
+} from "./marketplace";
+import { dates } from "./pricing";
 import { mkdir, writeFile, readFile } from "node:fs/promises";
 import path from "node:path";
 import { randomUUID } from "node:crypto";
@@ -11,7 +17,7 @@ const json = (value: unknown) => JSON.parse(JSON.stringify(value));
 export async function publicOperations(req: NextRequest, segments: string[]) {
   if (segments[0] === "availability" && segments[1] && req.method === "GET") {
     const car = await db.vehicle.findFirstOrThrow({
-        where: { id: segments[1], archived: false },
+        where: { id: segments[1], ...visibleVehicles },
       }),
       config = await settings();
     const start = new Date(new Date().toISOString().slice(0, 10)),
@@ -227,7 +233,10 @@ export async function adminOperations(
           await lockVehicles(tx, [initial.vehicleId]);
           const booking = await tx.reservation.findUniqueOrThrow({
             where: { id: initial.id },
-            include: { vehicle: true, inspections: true },
+            include: {
+              vehicle: { include: { agency: { select: agencyPricingSelect } } },
+              inspections: true,
+            },
           });
           if (
             (input.kind === "DEPARTURE" && booking.status !== "CONFIRMED") ||
@@ -263,7 +272,7 @@ export async function adminOperations(
             booking.returnAt,
             booking.id,
           );
-          const quote = rentalQuote(
+          const quote = marketplaceQuote(
             booking.vehicle,
             await settings(tx),
             booking.pickupAt,
@@ -291,6 +300,7 @@ export async function adminOperations(
             where: { id: booking.id },
             data: {
               status: input.kind === "DEPARTURE" ? "ACTIVE" : "COMPLETED",
+              ...bookingSplit(quote),
               total: quote.total,
               days: quote.days,
               pricingSnapshot: quote,

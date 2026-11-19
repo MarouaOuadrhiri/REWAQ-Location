@@ -1,3 +1,9 @@
+import {
+  visibleVehicles,
+  agencyPricingSelect,
+  publicVehicle,
+} from "@/lib/marketplace";
+import { settings } from "@/lib/reservations";
 import Link from "next/link";
 import {
   Plane,
@@ -14,12 +20,17 @@ import { CarCard } from "@/components/CarCard";
 import { HeroCarousel } from "@/components/HeroCarousel";
 export const dynamic = "force-dynamic";
 export default async function Home() {
-  const vehicles = await db.vehicle.findMany({
-    where: { archived: false },
-    include: { images: { orderBy: { position: "asc" } } },
+  const rawVehicles = await db.vehicle.findMany({
+    where: visibleVehicles,
+    include: {
+      agency: { select: agencyPricingSelect },
+      images: { orderBy: { position: "asc" } },
+    },
     orderBy: [{ featured: "desc" }, { createdAt: "asc" }],
     take: 6,
   });
+  const config = await settings();
+  const vehicles = rawVehicles.map((v) => publicVehicle(v, config));
   const cars = JSON.parse(JSON.stringify(vehicles));
   return (
     <>
